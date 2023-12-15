@@ -1,0 +1,36 @@
+name: PomoFlutter
+description: "Aplicación web/android realizada en flutter como base de datos Firebase para la gestión eficiente de tareas."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  provider: ^6.0.0
+  get: ^4.6.6
+  http: ^1.1.0
+  get_storage: ^2.1.1
+  smooth_page_indicator: ^1.1.0
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  google_sign_in: ^6.2.1
+  cloud_firestore: ^4.13.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/images/
