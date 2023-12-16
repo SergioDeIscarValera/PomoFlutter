@@ -5,8 +5,10 @@ enum Routes {
   LOGIN_EMAIL,
   REGISTER,
   FORGOT_PASSWORD,
-  HOME,
   EMAIL_VERIFICATION,
+
+  MAIN,
+  LIST_TASKS,
 }
 
 extension RoutesPath on Routes {
@@ -24,10 +26,13 @@ extension RoutesPath on Routes {
         return "/auth/register";
       case Routes.FORGOT_PASSWORD:
         return "/auth/forgot-password";
-      case Routes.HOME:
-        return "/home";
       case Routes.EMAIL_VERIFICATION:
         return "/auth/email-verification";
+
+      case Routes.MAIN:
+        return "/home";
+      case Routes.LIST_TASKS:
+        return "/home/list-tasks";
     }
   }
 }

@@ -34,7 +34,7 @@ class AuthController extends GetxController {
       return;
     }
     if (newUser.emailVerified) {
-      Get.offAllNamed(Routes.HOME.path);
+      Get.offAllNamed(Routes.MAIN.path);
     } else {
       Get.offAllNamed(Routes.EMAIL_VERIFICATION.path);
     }

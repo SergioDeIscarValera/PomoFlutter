@@ -6,6 +6,9 @@ import 'package:PomoFlutter/content/auth/pages/register_page.dart';
 import 'package:PomoFlutter/content/auth/storage/binding/email_verification_binding.dart';
 import 'package:PomoFlutter/content/first_time/pages/first_time_page.dart';
 import 'package:PomoFlutter/content/first_time/storage/binding/first_time_binding.dart';
+import 'package:PomoFlutter/content/home/pages/main_page.dart';
+import 'package:PomoFlutter/content/home/pages/task_list_page.dart';
+import 'package:PomoFlutter/content/home/storage/binding/Main_binding.dart';
 import 'package:PomoFlutter/content/splash/pages/splash_page.dart';
 import 'package:PomoFlutter/content/splash/storage/binding/splash_binding.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
@@ -44,5 +47,14 @@ class AppPages {
       page: () => const EmailVerificationPage(),
       binding: EmailVerificationBinding(),
     ),
+    GetPage(
+      name: Routes.MAIN.path,
+      page: () => const MainPage(),
+      binding: MainBinding(),
+    ),
+    GetPage(
+      name: Routes.LIST_TASKS.path,
+      page: () => const TaskListPage(),
+    )
   ];
 }

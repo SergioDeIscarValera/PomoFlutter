@@ -45,7 +45,7 @@ class EmailVerificationController extends GetxController {
     if (user != null && user.emailVerified) {
       timer?.cancel();
       MySnackBar.snackSuccess("email_verified".tr);
-      Get.offAllNamed(Routes.HOME.path);
+      Get.offAllNamed(Routes.MAIN.path);
     }
   }
 }

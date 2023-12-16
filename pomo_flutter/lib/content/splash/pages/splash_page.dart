@@ -16,7 +16,7 @@ class SplashPage extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Image.asset(
-            'lib/assets/images/logo.png',
+            'assets/images/logo.png',
             width: 200,
           ),
         ),
