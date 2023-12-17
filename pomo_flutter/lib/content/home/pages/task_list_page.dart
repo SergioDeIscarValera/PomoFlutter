@@ -1,7 +1,10 @@
+import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
-import 'package:PomoFlutter/routes/app_routes.dart';
+import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/themes/colors.dart';
+import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
+import 'package:PomoFlutter/widgets/my_dropdown_button.dart';
 import 'package:PomoFlutter/widgets/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,8 +46,8 @@ class TaskListBody extends StatelessWidget {
           mainController.setPage(0);
         },
         icon: Icons.arrow_back,
-        title: "${"today_task".tr} (${mainController.todayTasks.length})",
-        body: ListView(
+        title: "${"today_task".tr} (${mainController.filteredTask.length})",
+        body: Column(
           children: [
             const SizedBox(height: 15),
             Row(
@@ -91,7 +94,68 @@ class TaskListBody extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 15),
-            TaskList(mainController: mainController),
+            WrapInMid(
+              otherFlex: context.width > 1100 ? 1 : 0,
+              child: Obx(
+                () => MyDropdownButton<TaskCategory?>(
+                  onChanged: (value) {
+                    mainController.setCategoryFilter(value);
+                  },
+                  value: mainController.categoryFilterSelected.value,
+                  items: [
+                    DropdownMenuItem(
+                      value: null,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "see_all".tr,
+                            style: MyTextStyles.p.textStyle,
+                          ),
+                          const SizedBox(width: 10),
+                          Icon(
+                            Icons.all_inclusive,
+                            color: MyColors.CONTRARY.color,
+                          )
+                        ],
+                      ),
+                    ),
+                    ...TaskCategory.values.map(
+                      (e) => DropdownMenuItem(
+                        value: e,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              e.name,
+                              style: MyTextStyles.p.textStyle,
+                            ),
+                            const SizedBox(width: 10),
+                            Icon(
+                              e.icon,
+                              color: MyColors.CONTRARY.color,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 15),
+            Expanded(
+              child: SingleChildScrollView(
+                child: WrapInMid(
+                  otherFlex: context.width > 1100 ? 1 : 0,
+                  child: TaskList(
+                    mainController: mainController,
+                    filtered: true,
+                    scrollable: true,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

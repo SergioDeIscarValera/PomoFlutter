@@ -8,7 +8,7 @@ class Task {
   final String description;
   final DateTime dateTime;
   final TaskCategory category;
-  final TaskColors color;
+  final TaskColor color;
   final int workSessions;
   final int workSessionTime;
   final int longBreakTime;

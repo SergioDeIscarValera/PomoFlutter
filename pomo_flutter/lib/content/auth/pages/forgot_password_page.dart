@@ -1,12 +1,13 @@
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
-import 'package:PomoFlutter/content/auth/utils/FormValidator.dart';
+import 'package:PomoFlutter/utils/form_validator.dart';
 import 'package:PomoFlutter/content/auth/widgets/auth_generic_page.dart';
-import 'package:PomoFlutter/content/auth/widgets/my_text_form_fild.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/widgets/responsive_layout.dart';
 import 'package:PomoFlutter/widgets/row_divider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../widgets/my_text_form_fild.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);

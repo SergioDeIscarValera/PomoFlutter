@@ -25,4 +25,18 @@ class FormValidator {
     }
     return null;
   }
+
+  String? isValidTaskName(String? text) {
+    if (text == null || text.isEmpty || text.length > 20) {
+      return "task_name_error".tr;
+    }
+    return null;
+  }
+
+  String? isValidTaskDescription(String? text) {
+    if (text == null || text.isEmpty || text.length > 100) {
+      return "task_description_error".tr;
+    }
+    return null;
+  }
 }

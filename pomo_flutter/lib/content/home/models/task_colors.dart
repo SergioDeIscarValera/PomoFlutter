@@ -2,7 +2,7 @@ import 'package:PomoFlutter/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-enum TaskColors {
+enum TaskColor {
   red,
   orange,
   yellow,
@@ -12,60 +12,60 @@ enum TaskColors {
   pink,
 }
 
-extension TaskColorsExtens on TaskColors {
+extension TaskColorsExtens on TaskColor {
   Color get color {
     switch (this) {
-      case TaskColors.red:
+      case TaskColor.red:
         return MyColors.DANGER.color;
-      case TaskColors.orange:
+      case TaskColor.orange:
         return const Color(0xFFfd7e14);
-      case TaskColors.yellow:
+      case TaskColor.yellow:
         return MyColors.WARNING.color;
-      case TaskColors.green:
+      case TaskColor.green:
         return MyColors.SUCCESS.color;
-      case TaskColors.blue:
+      case TaskColor.blue:
         return MyColors.INFO.color;
-      case TaskColors.purple:
+      case TaskColor.purple:
         return const Color(0xFF6f42c1);
-      case TaskColors.pink:
+      case TaskColor.pink:
         return const Color(0xFFe83e8c);
     }
   }
 
   Color get inverse {
     switch (this) {
-      case TaskColors.red:
+      case TaskColor.red:
         return MyColors.DANGER.inverse;
-      case TaskColors.orange:
+      case TaskColor.orange:
         return Color.fromARGB(255, 120, 62, 16);
-      case TaskColors.yellow:
+      case TaskColor.yellow:
         return MyColors.WARNING.inverse;
-      case TaskColors.green:
+      case TaskColor.green:
         return MyColors.SUCCESS.inverse;
-      case TaskColors.blue:
+      case TaskColor.blue:
         return MyColors.INFO.inverse;
-      case TaskColors.purple:
+      case TaskColor.purple:
         return Color.fromARGB(255, 50, 31, 86);
-      case TaskColors.pink:
+      case TaskColor.pink:
         return Color.fromARGB(255, 123, 35, 76);
     }
   }
 
   String get name {
     switch (this) {
-      case TaskColors.red:
+      case TaskColor.red:
         return "red_name".tr;
-      case TaskColors.orange:
+      case TaskColor.orange:
         return "orange_name".tr;
-      case TaskColors.yellow:
+      case TaskColor.yellow:
         return "yellow_name".tr;
-      case TaskColors.green:
+      case TaskColor.green:
         return "green_name".tr;
-      case TaskColors.blue:
+      case TaskColor.blue:
         return "blue_name".tr;
-      case TaskColors.purple:
+      case TaskColor.purple:
         return "purple_name".tr;
-      case TaskColors.pink:
+      case TaskColor.pink:
         return "pink_name".tr;
     }
   }

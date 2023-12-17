@@ -5,9 +5,11 @@ class GenericContainer extends StatelessWidget {
   const GenericContainer({
     super.key,
     required this.children,
+    this.padding = 16,
   });
 
   final List<Widget> children;
+  final double padding;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class GenericContainer extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(padding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: children,

@@ -26,6 +26,7 @@ extension ThemesData on Themes {
             thumbColor: MaterialStateProperty.all(MyColors.DARK.color),
           ),
           sliderTheme: SliderThemeData(
+            inactiveTrackColor: MyColors.DARK_EMPHSIS.color,
             valueIndicatorColor: MyColors.DARK.color,
             valueIndicatorTextStyle: MyTextStyles.p.textStyle.copyWith(
               color: MyColors.LIGHT.color,
@@ -51,10 +52,19 @@ extension ThemesData on Themes {
             thumbColor: MaterialStateProperty.all(MyColors.LIGHT.color),
           ),
           sliderTheme: SliderThemeData(
+            inactiveTrackColor: MyColors.LIGHT_EMPHSIS.color,
             valueIndicatorColor: MyColors.LIGHT.color,
             valueIndicatorTextStyle: MyTextStyles.p.textStyle.copyWith(
               color: MyColors.DARK.color,
             ),
+          ),
+          //Date picker
+          datePickerTheme: DatePickerThemeData(
+            backgroundColor: MyColors.LIGHT.color,
+          ),
+          //Time picker
+          timePickerTheme: TimePickerThemeData(
+            backgroundColor: MyColors.LIGHT.color,
           ),
         );
     }

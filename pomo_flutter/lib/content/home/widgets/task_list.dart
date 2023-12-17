@@ -9,16 +9,23 @@ class TaskList extends StatelessWidget {
     super.key,
     required this.mainController,
     this.limit = false,
+    this.scrollable = false,
+    this.filtered = false,
   });
 
   final bool limit;
+  final bool scrollable;
+  final bool filtered;
   final MainController mainController;
 
   @override
   Widget build(BuildContext context) {
     return Obx(
       () {
-        if (mainController.todayTasks.isEmpty) {
+        var list = filtered
+            ? mainController.filteredTask
+            : mainController.todayTasks.values.toList();
+        if (list.isEmpty) {
           return Center(
             child: Text(
               "no_task".tr,
@@ -29,18 +36,18 @@ class TaskList extends StatelessWidget {
         } else {
           return ListView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: scrollable
+                ? const ScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              var task = mainController.todayTasks.values.toList()[index];
+              var task = list[index];
               return TaskListItem(
                 key: Key(task.id),
                 task: task,
                 mainController: mainController,
               );
             },
-            itemCount: limit && mainController.todayTasks.length > 5
-                ? 5
-                : mainController.todayTasks.length,
+            itemCount: limit && list.length > 5 ? 5 : list.length,
           );
         }
       },

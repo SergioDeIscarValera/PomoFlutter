@@ -26,6 +26,7 @@ dependencies:
   # sleek_circular_slider: ^2.0.1
   syncfusion_flutter_gauges: ^23.2.7
   uuid: ^4.2.2
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
