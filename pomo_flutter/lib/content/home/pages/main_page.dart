@@ -9,9 +9,7 @@ import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/widgets/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'home_page.dart';
-// import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -96,6 +94,7 @@ class MainBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //When the virtual keyboard is opened, the page index is changed to 0
     return PageView(
       controller: mainController.mainPageController,
       physics: const NeverScrollableScrollPhysics(),
@@ -117,6 +116,12 @@ class MainBody extends StatelessWidget {
           title: "profile_title".tr,
           body: Container(
             color: Colors.purple,
+            child: ElevatedButton(
+              onPressed: () {
+                authController.signOut();
+              },
+              child: Text("logout".tr),
+            ),
           ),
         ),
       ],

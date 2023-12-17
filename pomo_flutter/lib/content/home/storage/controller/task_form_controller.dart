@@ -1,5 +1,9 @@
+import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
+import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/models/task_colors.dart';
+import 'package:PomoFlutter/content/home/services/task_repository.dart';
+import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/utils/storage_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,6 +23,10 @@ class TaskFormController extends GetxController {
   final RxInt timeWorkingSession = 25.obs;
   final RxInt timeBreakSession = 5.obs;
   final RxInt timeLongBreakSession = 15.obs;
+
+  final TaskRepository _taskRepository = TaskRepository();
+  final AuthController authController = Get.find();
+  final MainController mainController = Get.find();
 
   @override
   void onInit() {
@@ -99,7 +107,32 @@ class TaskFormController extends GetxController {
     selectedColor.value = value;
   }
 
-  void saveTask() {}
+  void saveTask() async {
+    var newTask = Task(
+      title: titleController.text.trim(),
+      description: descriptionController.text.trim(),
+      dateTime: DateTime(
+        selectedDate.value.year,
+        selectedDate.value.month,
+        selectedDate.value.day,
+        selectedTime.value.hour,
+        selectedTime.value.minute,
+      ),
+      category: selectedCategory.value,
+      color: selectedColor.value,
+      workSessions: countWorkingSession.value,
+      workSessionTime: timeWorkingSession.value,
+      longBreakTime: timeLongBreakSession.value,
+      shortBreakTime: timeBreakSession.value,
+    );
+    if (authController.firebaseUser == null ||
+        authController.firebaseUser!.email == null) return;
+    var result = await _taskRepository.save(
+        entity: newTask, idc: authController.firebaseUser!.email!);
+    if (result == null) return;
+    mainController.setPage(0);
+    resetForm();
+  }
 
   void setCountWorkingSession(double value) {
     countWorkingSession.value = value.round();

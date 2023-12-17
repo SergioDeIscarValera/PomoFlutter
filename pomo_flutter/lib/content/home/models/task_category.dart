@@ -34,4 +34,17 @@ extension TaskCategoryExten on TaskCategory {
         return Icons.more_horiz;
     }
   }
+
+  String get id {
+    switch (this) {
+      case TaskCategory.work:
+        return "work";
+      case TaskCategory.personal:
+        return "personal";
+      case TaskCategory.shopping:
+        return "shopping";
+      case TaskCategory.others:
+        return "others";
+    }
+  }
 }

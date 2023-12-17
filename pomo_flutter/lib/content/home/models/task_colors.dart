@@ -69,4 +69,23 @@ extension TaskColorsExtens on TaskColor {
         return "pink_name".tr;
     }
   }
+
+  String get id {
+    switch (this) {
+      case TaskColor.red:
+        return "red";
+      case TaskColor.orange:
+        return "orange";
+      case TaskColor.yellow:
+        return "yellow";
+      case TaskColor.green:
+        return "green";
+      case TaskColor.blue:
+        return "blue";
+      case TaskColor.purple:
+        return "purple";
+      case TaskColor.pink:
+        return "pink";
+    }
+  }
 }

@@ -30,7 +30,7 @@ class AuthController extends GetxController {
 
   handleAuthChanged(User? newUser) async {
     if (newUser == null || newUser.isAnonymous == true) {
-      Get.offAllNamed(Routes.LOGIN.path);
+      Get.offAllNamed(Routes.SPLASH.path);
       return;
     }
     if (newUser.emailVerified) {

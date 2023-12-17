@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
+import 'package:PomoFlutter/content/home/services/task_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,6 +21,9 @@ class MainController extends GetxController {
   final RxDouble _taskProgress = 0.0.obs;
   RxDouble get taskProgress => _taskProgress;
 
+  final AuthController authController = Get.find();
+  final TaskRepository _taskRepository = TaskRepository();
+
   @override
   void onInit() async {
     _startTimer();
@@ -35,6 +40,20 @@ class MainController extends GetxController {
     filteredTask.value = todayTasks.values.toList();
     categoryFilterSelected.listen((event) {
       _filterTasks();
+    });
+
+    authController.user.listen((user) async {
+      if (user == null || user.email == null) return;
+      _taskRepository.addListener(
+        idc: user.email!,
+        listener: (newTasks) {
+          todayTasks.clear();
+          for (var task in newTasks) {
+            todayTasks[task.id] = task;
+          }
+          _filterTasks();
+        },
+      );
     });
 
     super.onInit();
@@ -73,27 +92,29 @@ class MainController extends GetxController {
   }
 
   void removeTask(String id) {
-    todayTasks.remove(id);
-    //Por ahora sin DB
-    todayTasks.refresh();
+    _taskRepository.deleteById(
+        id: id, idc: authController.firebaseUser!.email!);
   }
 
   void clearDoneTasks() {
-    todayTasks.removeWhere(
-        (key, value) => filteredTask.contains(value) && value.isFinished);
-    //Por ahora sin DB
-    todayTasks.refresh();
+    _taskRepository.deleteAllWhere(
+        ids: todayTasks.values
+            .where((task) => task.isFinished && filteredTask.contains(task))
+            .map((e) => e.id)
+            .toList(),
+        idc: authController.firebaseUser!.email!);
   }
 
   void markAllTasksAsDone() {
-    for (var task in todayTasks.values) {
-      if (!filteredTask.contains(task)) {
-        continue;
-      }
-      task.setAsDone();
-    }
-    //Por ahora sin DB
-    todayTasks.refresh();
+    todayTasks.forEach((key, value) {
+      if (!filteredTask.contains(value)) return;
+      value.setAsDone();
+    });
+    _taskRepository.saveAll(
+        entities: todayTasks.values
+            .where((task) => filteredTask.contains(task))
+            .toList(),
+        idc: authController.firebaseUser!.email!);
   }
 
   double _getFinishedPercentage(Map<String, Task> map) {

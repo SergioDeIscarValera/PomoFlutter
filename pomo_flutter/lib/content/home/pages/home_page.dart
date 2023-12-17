@@ -28,6 +28,7 @@ class HomePage extends StatelessWidget {
       title: "app_name".tr,
       body: ListView(
         children: [
+          TextField(),
           const SizedBox(height: 15),
           WelcomeText(
             authController: authController,
@@ -233,6 +234,9 @@ class WelcomeText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userName = authController.firebaseUser?.displayName?.isEmpty ?? true
+        ? authController.firebaseUser?.email?.split("@")[0] ?? "anonymous"
+        : authController.firebaseUser?.displayName ?? "anonymous";
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
@@ -247,9 +251,7 @@ class WelcomeText extends StatelessWidget {
           ),
         ),
         Text(
-          authController.firebaseUser?.displayName ??
-              authController.firebaseUser?.email?.split("@")[0] ??
-              "anonymous",
+          userName,
           style: MyTextStyles.p.textStyle.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: context.width < 500 ? 18 : 24,

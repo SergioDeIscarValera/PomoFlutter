@@ -34,7 +34,7 @@ class SideNavigationMenu extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(16),
       child: Obx(
-        () => Column(
+        () => ListView(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
