@@ -1,7 +1,9 @@
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
+import 'package:PomoFlutter/content/home/storage/controller/home_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
 import 'package:PomoFlutter/content/home/widgets/task_list.dart';
+import 'package:PomoFlutter/content/home/widgets/task_list_item.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
@@ -9,6 +11,8 @@ import 'package:PomoFlutter/widgets/generic_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+
+import '../widgets/welcome_text.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -21,6 +25,7 @@ class HomePage extends StatelessWidget {
   final MainController mainController;
   @override
   Widget build(BuildContext context) {
+    HomeController homeController = Get.find();
     return GenericTemplate(
       onIconTap: () {
         mainController.setPage(0);
@@ -28,16 +33,15 @@ class HomePage extends StatelessWidget {
       title: "app_name".tr,
       body: ListView(
         children: [
-          TextField(),
           const SizedBox(height: 15),
           WelcomeText(
             authController: authController,
             mainController: mainController,
           ),
           const SizedBox(height: 20),
-          TaskTotalStatus(mainController: mainController),
+          TaskTotalStatus(homeController: homeController),
           const SizedBox(height: 30),
-          ListOfTask(mainController: mainController),
+          ListOfTask(homeController: homeController),
           const SizedBox(height: 30),
         ],
       ),
@@ -48,10 +52,10 @@ class HomePage extends StatelessWidget {
 class ListOfTask extends StatelessWidget {
   const ListOfTask({
     super.key,
-    required this.mainController,
+    required this.homeController,
   });
 
-  final MainController mainController;
+  final HomeController homeController;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +66,7 @@ class ListOfTask extends StatelessWidget {
           children: [
             Obx(
               () => Text(
-                "${"today_task".tr} (${mainController.todayTasks.length})",
+                "${"today_task".tr} (${homeController.todayTasks.length})",
                 style: MyTextStyles.p.textStyle,
               ),
             ),
@@ -84,7 +88,12 @@ class ListOfTask extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         TaskList(
-          mainController: mainController,
+          mapTasks: homeController.todayTasks,
+          itemList: (task) => TaskListItem(
+            key: Key(task.id),
+            task: task,
+            onTap: (task) {},
+          ),
           limit: true,
         )
       ],
@@ -95,10 +104,10 @@ class ListOfTask extends StatelessWidget {
 class TaskTotalStatus extends StatelessWidget {
   const TaskTotalStatus({
     Key? key,
-    required this.mainController,
+    required this.homeController,
   }) : super(key: key);
 
-  final MainController mainController;
+  final HomeController homeController;
   @override
   Widget build(BuildContext context) {
     return GenericContainer(
@@ -109,7 +118,7 @@ class TaskTotalStatus extends StatelessWidget {
               height: context.width < 500 ? 100 : 150,
               child: _totalTaskSlider(
                 context,
-                mainController.taskProgress.value,
+                homeController.taskProgress.value,
               ),
             ),
           ),
@@ -124,7 +133,7 @@ class TaskTotalStatus extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _getCustomMessage(mainController.taskProgress.round()),
+                  _getCustomMessage(homeController.taskProgress.round()),
                   style: MyTextStyles.p.textStyle
                       .copyWith(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
@@ -135,13 +144,13 @@ class TaskTotalStatus extends StatelessWidget {
                       .tr
                       .replaceAll(
                           "{completed}",
-                          mainController.todayTasks.values
+                          homeController.todayTasks.values
                               .where((t) => t.isFinished)
                               .toList()
                               .length
                               .toString())
                       .replaceAll("{total}",
-                          mainController.todayTasks.length.toString()),
+                          homeController.todayTasks.length.toString()),
                   style: MyTextStyles.p.textStyle.copyWith(
                     fontSize: 14,
                     color: MyColors.CONTRARY.color.withOpacity(0.5),
@@ -219,60 +228,5 @@ class TaskTotalStatus extends StatelessWidget {
         )
       ],
     );
-  }
-}
-
-class WelcomeText extends StatelessWidget {
-  const WelcomeText({
-    Key? key,
-    required this.authController,
-    required this.mainController,
-  }) : super(key: key);
-
-  final AuthController authController;
-  final MainController mainController;
-
-  @override
-  Widget build(BuildContext context) {
-    var userName = authController.firebaseUser?.displayName?.isEmpty ?? true
-        ? authController.firebaseUser?.email?.split("@")[0] ?? "anonymous"
-        : authController.firebaseUser?.displayName ?? "anonymous";
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        Obx(
-          () => Text(
-            "${_getGoodTime(mainController.now.value.hour)}, ",
-            style: MyTextStyles.p.textStyle.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: context.width < 500 ? 18 : 24,
-            ),
-            textAlign: TextAlign.start,
-          ),
-        ),
-        Text(
-          userName,
-          style: MyTextStyles.p.textStyle.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: context.width < 500 ? 18 : 24,
-          ),
-          textAlign: TextAlign.start,
-        ),
-        const SizedBox(width: 10),
-        Image.asset(
-          "assets/images/waving-hand.png",
-          height: context.width < 500 ? 40 : 50,
-        ),
-      ],
-    );
-  }
-
-  String _getGoodTime(int hour) {
-    return switch (hour) {
-      >= 0 && < 6 => 'good_night'.tr,
-      >= 6 && < 12 => 'good_morning'.tr,
-      >= 12 && < 19 => 'good_afternoon'.tr,
-      _ => 'good_evening'.tr,
-    };
   }
 }

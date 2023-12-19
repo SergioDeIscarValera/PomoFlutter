@@ -8,12 +8,14 @@ class GenericTemplate extends StatelessWidget {
     required this.onIconTap,
     required this.title,
     required this.body,
+    this.titleSize = 32,
   }) : super(key: key);
 
   final IconData? icon;
   final Function() onIconTap;
   final String title;
   final Widget body;
+  final double titleSize;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,9 @@ class GenericTemplate extends StatelessWidget {
             const SizedBox(width: 10),
             Text(
               title,
-              style: MyTextStyles.h1.textStyle,
+              style: MyTextStyles.h1.textStyle.copyWith(
+                fontSize: titleSize,
+              ),
             ),
           ],
         ),

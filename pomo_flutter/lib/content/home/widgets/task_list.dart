@@ -1,5 +1,4 @@
-import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list_item.dart';
+import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,25 +6,22 @@ import 'package:get/get.dart';
 class TaskList extends StatelessWidget {
   const TaskList({
     super.key,
-    required this.mainController,
+    required this.mapTasks,
     this.limit = false,
     this.scrollable = false,
-    this.filtered = false,
+    required this.itemList,
   });
 
   final bool limit;
   final bool scrollable;
-  final bool filtered;
-  final MainController mainController;
+  final RxMap<String, Task> mapTasks;
+  final Widget Function(Task) itemList;
 
   @override
   Widget build(BuildContext context) {
     return Obx(
       () {
-        var list = filtered
-            ? mainController.filteredTask
-            : mainController.todayTasks.values.toList();
-        if (list.isEmpty) {
+        if (mapTasks.isEmpty) {
           return Center(
             child: Text(
               "no_task".tr,
@@ -40,14 +36,10 @@ class TaskList extends StatelessWidget {
                 ? const ScrollPhysics()
                 : const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              var task = list[index];
-              return TaskListItem(
-                key: Key(task.id),
-                task: task,
-                mainController: mainController,
-              );
+              var task = mapTasks.values.toList()[index];
+              return itemList(task);
             },
-            itemCount: limit && list.length > 5 ? 5 : list.length,
+            itemCount: limit && mapTasks.length > 5 ? 5 : mapTasks.length,
           );
         }
       },

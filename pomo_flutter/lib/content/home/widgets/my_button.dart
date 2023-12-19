@@ -40,18 +40,19 @@ class MyButton extends StatelessWidget {
               ],
             ),
             child: Center(
-                child: icon == null
-                    ? Text(
-                        text!,
-                        style: MyTextStyles.p.textStyle.copyWith(
-                          color: textColor,
-                        ),
-                        textAlign: TextAlign.center,
-                      )
-                    : Icon(
-                        icon,
+              child: icon == null
+                  ? Text(
+                      text!,
+                      style: MyTextStyles.p.textStyle.copyWith(
                         color: textColor,
-                      )),
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                  : Icon(
+                      icon,
+                      color: textColor,
+                    ),
+            ),
           ),
         ),
       ),

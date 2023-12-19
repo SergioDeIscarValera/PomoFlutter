@@ -14,7 +14,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../widgets/my_dropdown_button.dart';
-import '../../../widgets/my_splider.dart';
+import '../widgets/sliders_working_config.dart';
 import '../widgets/wrap_in_mid.dart';
 
 class TaskFormPage extends StatelessWidget {
@@ -29,7 +29,7 @@ class TaskFormPage extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskFormController taskFormController = Get.find();
     FormValidator formValidator = FormValidator();
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     const double spaceBetween = 25;
     return GenericTemplate(
       onIconTap: () {
@@ -37,7 +37,7 @@ class TaskFormPage extends StatelessWidget {
       },
       title: "task_form_title".tr,
       body: Form(
-        key: _formKey,
+        key: formKey,
         child: Column(
           children: [
             const SizedBox(height: 15),
@@ -62,7 +62,7 @@ class TaskFormPage extends StatelessWidget {
                     text: "task_form_button_save".tr,
                     icon: Icons.save,
                     onTap: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate()) {
                         taskFormController.saveTask();
                       }
                     },
@@ -271,75 +271,28 @@ class TaskFormPage extends StatelessWidget {
                   ),
                   const SizedBox(height: spaceBetween),
                   //Slider for count working session
-                  WrapInMid(
-                    flex: 4,
-                    otherFlex: context.width < 500 ? 0 : 1,
-                    child: Obx(
-                      () => MySplider(
-                        label: "task_form_input_count_working_session".tr,
-                        value: taskFormController.countWorkingSession.value,
-                        onChanged: (value) {
-                          taskFormController.setCountWorkingSession(value);
-                        },
-                        min: 1,
-                        max: 20,
-                        divisions: 19,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: spaceBetween),
-                  //Slider for time of working session
-                  WrapInMid(
-                    flex: 4,
-                    otherFlex: context.width < 500 ? 0 : 1,
-                    child: Obx(
-                      () => MySplider(
-                        label: "task_form_input_time_working_session".tr,
-                        value: taskFormController.timeWorkingSession.value,
-                        onChanged: (value) {
-                          taskFormController.setTimeWorkingSession(value);
-                        },
-                        min: 1,
-                        max: 120,
-                        divisions: 119,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: spaceBetween),
-                  //Slider for time of break session
-                  WrapInMid(
-                    flex: 4,
-                    otherFlex: context.width < 500 ? 0 : 1,
-                    child: Obx(
-                      () => MySplider(
-                        label: "task_form_input_time_break_session".tr,
-                        value: taskFormController.timeBreakSession.value,
-                        onChanged: (value) {
-                          taskFormController.setTimeBreakSession(value);
-                        },
-                        min: 1,
-                        max: 60,
-                        divisions: 59,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: spaceBetween),
-                  //Slider for time of long break session
-                  WrapInMid(
-                    flex: 4,
-                    otherFlex: context.width < 500 ? 0 : 1,
-                    child: Obx(
-                      () => MySplider(
-                        label: "task_form_input_time_long_break_session".tr,
-                        value: taskFormController.timeLongBreakSession.value,
-                        onChanged: (value) {
-                          taskFormController.setTimeLongBreakSession(value);
-                        },
-                        min: 1,
-                        max: 60,
-                        divisions: 59,
-                      ),
-                    ),
+                  SlidersWorkingConfig(
+                    countWorkingSession: taskFormController.countWorkingSession,
+                    onChangedCountWorkingSession: (value) {
+                      taskFormController.countWorkingSession.value =
+                          value.round();
+                    },
+                    timeWorkingSession: taskFormController.timeWorkingSession,
+                    onChangedTimeWorkingSession: (value) {
+                      taskFormController.timeWorkingSession.value =
+                          value.round();
+                    },
+                    timeBreakSession: taskFormController.timeBreakSession,
+                    onChangedTimeBreakSession: (value) {
+                      taskFormController.timeBreakSession.value = value.round();
+                    },
+                    timeLongBreakSession:
+                        taskFormController.timeLongBreakSession,
+                    onChangedTimeLongBreakSession: (value) {
+                      taskFormController.timeLongBreakSession.value =
+                          value.round();
+                    },
+                    spaceBetween: spaceBetween,
                   ),
                   const SizedBox(height: spaceBetween),
                 ],
@@ -354,7 +307,6 @@ class TaskFormPage extends StatelessWidget {
 
 class _GenericContainerSplited extends StatelessWidget {
   const _GenericContainerSplited({
-    super.key,
     required this.text,
     required this.icon,
     required this.onTap,

@@ -8,7 +8,10 @@ import 'package:PomoFlutter/content/first_time/pages/first_time_page.dart';
 import 'package:PomoFlutter/content/first_time/storage/binding/first_time_binding.dart';
 import 'package:PomoFlutter/content/home/pages/main_page.dart';
 import 'package:PomoFlutter/content/home/pages/task_list_page.dart';
+import 'package:PomoFlutter/content/home/storage/binding/calendary_binding.dart';
+import 'package:PomoFlutter/content/home/storage/binding/home_binding.dart';
 import 'package:PomoFlutter/content/home/storage/binding/main_binding.dart';
+import 'package:PomoFlutter/content/home/storage/binding/profile_binding.dart';
 import 'package:PomoFlutter/content/home/storage/binding/task_form_binding.dart';
 import 'package:PomoFlutter/content/splash/pages/splash_page.dart';
 import 'package:PomoFlutter/content/splash/storage/binding/splash_binding.dart';
@@ -53,7 +56,10 @@ class AppPages {
       page: () => const MainPage(),
       binding: MainBinding(),
       bindings: [
+        HomeBinding(),
         TaskFormBinding(),
+        ProfileBinding(),
+        CalendaryBinding(),
       ],
     ),
     GetPage(

@@ -1,16 +1,16 @@
 import 'package:PomoFlutter/content/home/models/task_category.dart';
+import 'package:PomoFlutter/content/home/storage/controller/home_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
+import 'package:PomoFlutter/content/home/widgets/task_list_item.dart';
 import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:PomoFlutter/widgets/my_dropdown_button.dart';
-import 'package:PomoFlutter/widgets/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../widgets/my_button.dart';
-import '../widgets/task_list.dart';
+import 'package:PomoFlutter/content/home/widgets/my_button.dart';
+import 'package:PomoFlutter/content/home/widgets/task_list.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({Key? key}) : super(key: key);
@@ -18,13 +18,13 @@ class TaskListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MainController mainController = Get.find();
+    HomeController homeController = Get.find();
     return Scaffold(
       backgroundColor: MyColors.CURRENT.color,
       body: SafeArea(
-        child: ResponsiveLayout(
-          mobile: TaskListBody(mainController: mainController),
-          tablet: TaskListBody(mainController: mainController),
-          desktop: TaskListBody(mainController: mainController),
+        child: TaskListBody(
+          mainController: mainController,
+          homeController: homeController,
         ),
       ),
     );
@@ -32,21 +32,27 @@ class TaskListPage extends StatelessWidget {
 }
 
 class TaskListBody extends StatelessWidget {
-  const TaskListBody({Key? key, required this.mainController})
-      : super(key: key);
+  const TaskListBody({
+    Key? key,
+    required this.mainController,
+    required this.homeController,
+  }) : super(key: key);
 
   final MainController mainController;
+  final HomeController homeController;
+
   @override
   Widget build(BuildContext context) {
     var showText = context.width > 600;
     return Obx(
       () => GenericTemplate(
+        titleSize: 28,
         onIconTap: () {
           Get.back();
           mainController.setPage(0);
         },
         icon: Icons.arrow_back,
-        title: "${"today_task".tr} (${mainController.filteredTask.length})",
+        title: "${"today_task".tr} (${homeController.filteredTask.length})",
         body: Column(
           children: [
             const SizedBox(height: 15),
@@ -58,7 +64,7 @@ class TaskListBody extends StatelessWidget {
                 Flexible(
                   child: MyButton(
                     onTap: () {
-                      mainController.clearDoneTasks();
+                      homeController.clearDoneTasks();
                     },
                     text: "clear_done_tasks".tr,
                     icon: showText ? null : Icons.clear_all,
@@ -83,7 +89,7 @@ class TaskListBody extends StatelessWidget {
                 Flexible(
                   child: MyButton(
                     onTap: () {
-                      mainController.markAllTasksAsDone();
+                      homeController.markAllTasksAsDone();
                     },
                     text: "mark_all_as_done".tr,
                     icon: showText ? null : Icons.done_all,
@@ -99,9 +105,9 @@ class TaskListBody extends StatelessWidget {
               child: Obx(
                 () => MyDropdownButton<TaskCategory?>(
                   onChanged: (value) {
-                    mainController.setCategoryFilter(value);
+                    homeController.setCategoryFilter(value);
                   },
-                  value: mainController.categoryFilterSelected.value,
+                  value: homeController.categoryFilterSelected.value,
                   items: [
                     DropdownMenuItem(
                       value: null,
@@ -149,8 +155,12 @@ class TaskListBody extends StatelessWidget {
                 child: WrapInMid(
                   otherFlex: context.width > 1100 ? 1 : 0,
                   child: TaskList(
-                    mainController: mainController,
-                    filtered: true,
+                    mapTasks: homeController.filteredTask,
+                    itemList: (task) => TaskListItem(
+                      key: Key(task.id),
+                      task: task,
+                      onTap: (task) {},
+                    ),
                     scrollable: true,
                   ),
                 ),

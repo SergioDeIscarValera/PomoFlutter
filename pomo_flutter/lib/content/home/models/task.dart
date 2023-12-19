@@ -71,6 +71,13 @@ class Task {
   int get workSessionsCompleted => _workSessionsCompleted;
   String get id => _id;
   bool get isFinished => _workSessionsCompleted == workSessions;
+  DateTime get endDateTime {
+    // Por cada sesión de trabajo una de descanso pequeña pero cuando llegue a 4 de trabajo una de descanso grande
+    var duration = workSessions * workSessionTime;
+    duration += (workSessions / 4).floor() * longBreakTime;
+    duration += ((workSessions / 4) * 3).floor() * shortBreakTime;
+    return dateTime.add(Duration(minutes: duration));
+  }
 
   void addWorkSession() {
     if (_workSessionsCompleted < workSessions) {

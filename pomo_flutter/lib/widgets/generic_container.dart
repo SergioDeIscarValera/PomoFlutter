@@ -6,16 +6,20 @@ class GenericContainer extends StatelessWidget {
     super.key,
     required this.children,
     this.padding = 16,
+    this.direction = Axis.horizontal,
+    this.color,
   });
 
   final List<Widget> children;
   final double padding;
+  final Axis direction;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+        color: color ?? (Get.isDarkMode ? Colors.grey[800] : Colors.grey[300]),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -26,9 +30,21 @@ class GenericContainer extends StatelessWidget {
         ],
       ),
       padding: EdgeInsets.all(padding),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: children,
+      child: Builder(
+        builder: (context) {
+          if (direction == Axis.horizontal) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: children,
+            );
+          } else {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: children,
+            );
+          }
+        },
       ),
     );
   }

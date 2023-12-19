@@ -55,17 +55,19 @@ class TaskRepository implements ITaskRepository {
   @override
   Future<List<Task>> findAllByCategory(
       {required TaskCategory category, required String idc}) async {
-    var result = await _taskJsonRepository.findAllByCategory(
-        category: category, idc: idc);
-    return result.map((e) => Task.fromJson(json: jsonDecode(e))).toList();
+    return await findAll(idc: idc).then((value) =>
+        value.where((element) => element.category == category).toList());
   }
 
   @override
   Future<List<Task>> findAllByDay(
       {required DateTime dateTime, required String idc}) async {
-    var result =
-        await _taskJsonRepository.findAllByDay(dateTime: dateTime, idc: idc);
-    return result.map((e) => Task.fromJson(json: jsonDecode(e))).toList();
+    return await findAll(idc: idc).then((value) => value
+        .where((element) =>
+            element.dateTime.day == dateTime.day &&
+            element.dateTime.month == dateTime.month &&
+            element.dateTime.year == dateTime.year)
+        .toList());
   }
 
   @override

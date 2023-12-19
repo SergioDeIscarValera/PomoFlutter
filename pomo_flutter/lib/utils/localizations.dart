@@ -53,6 +53,7 @@ class MyLocalizations extends Translations {
           "statics_title": "Your Progress",
           "task_form_title": "New Task",
           "profile_title": "Your Profile",
+          "calendar_title": "Calendar",
           "task_completed": "Task completed!",
           "completed_tasks": "{completed} of {total} completed!",
           "today_task": "Today's Tasks",
@@ -60,7 +61,7 @@ class MyLocalizations extends Translations {
           "clear_done_tasks": "Clear finished",
           "add_new_task": "Add new",
           "mark_all_as_done": "Mark all as done",
-          "no_task": "No tasks for today\n(WORK LAZY :P)",
+          "no_task": "No tasks for today...",
           "task_form_button_clear": "Clear form",
           "task_form_button_save": "Save task",
           "task_form_input_title": "Task title",
@@ -88,6 +89,14 @@ class MyLocalizations extends Translations {
               "Name must not be empty and have less than 20 characters",
           "task_description_error":
               "Description must not be empty and have less than 100 characters",
+          "default_working_config": "Default working configuration",
+          "reset_config": "Reset configuration",
+          "save_config": "Save configuration",
+          "error_save_config_web":
+              "The option to save the configuration is not available in the web version",
+          "user_config": "User configuration",
+          "logout": "Logout",
+          "aparence_config": "Appearance configuration",
         },
         'es_ES': {
           "app_name": "Pomo Flutter",
@@ -141,6 +150,7 @@ class MyLocalizations extends Translations {
           "statics_title": "Tu Progreso",
           "task_form_title": "Nueva Tarea",
           "profile_title": "Tu Perfil",
+          "calendar_title": "Calendario",
           "task_completed": "¡Tarea completada!",
           "completed_tasks": "¡{completed} de {total} completadas!",
           "today_task": "Tareas de hoy",
@@ -148,7 +158,7 @@ class MyLocalizations extends Translations {
           "clear_done_tasks": "Borrar completadas",
           "add_new_task": "Añadir nueva",
           "mark_all_as_done": "Marcar todas como completadas",
-          "no_task": "No hay tareas para hoy\n(TRABAJA VAGO :P)",
+          "no_task": "No hay tareas para hoy...",
           "task_form_button_clear": "Limpiar formulario",
           "task_form_button_save": "Guardar tarea",
           "task_form_input_title": "Título de la tarea",
@@ -176,6 +186,14 @@ class MyLocalizations extends Translations {
               "El nombre debe no estar vacío y tener menos de 20 caracteres",
           "task_description_error":
               "La descripción debe no estar vacía y tener menos de 100 caracteres",
+          "default_working_config": "Configuración de trabajo por defecto",
+          "reset_config": "Restablecer configuración",
+          "save_config": "Guardar configuración",
+          "error_save_config_web":
+              "La opción de guardar la configuración no está disponible en la versión web",
+          "user_config": "Configuración de usuario",
+          "logout": "Cerrar sesión",
+          "aparence_config": "Configuración de apariencia",
         },
       };
 }

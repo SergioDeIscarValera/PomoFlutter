@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/services/interface_task_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -98,32 +97,6 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
     }
     //data[_taskList] is a List<Map<String, dynamic>>
     return _findAllUsingSnapshot(docRef.value!);
-  }
-
-  @override
-  Future<List<String>> findAllByCategory(
-      {required TaskCategory category, required String idc}) async {
-    var docRef = await _getRefAndSnapshot(email: idc);
-    if (docRef.value == null) {
-      return [];
-    }
-    //data[_taskList] is a List<Map<String, dynamic>>
-    return _findAllUsingSnapshot(docRef.value!)
-        .where((element) => element.contains(category.name))
-        .toList();
-  }
-
-  @override
-  Future<List<String>> findAllByDay(
-      {required DateTime dateTime, required String idc}) async {
-    var docRef = await _getRefAndSnapshot(email: idc);
-    if (docRef.value == null) {
-      return [];
-    }
-    //data[_taskList] is a List<Map<String, dynamic>>
-    return _findAllUsingSnapshot(docRef.value!)
-        .where((element) => element.contains(dateTime.toString()))
-        .toList();
   }
 
   @override

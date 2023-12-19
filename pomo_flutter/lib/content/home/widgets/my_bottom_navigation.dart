@@ -19,6 +19,7 @@ class MyBottomNavigation extends StatelessWidget {
       () => CurvedNavigationBar(
         items: _generateIcons([
           Icons.home,
+          Icons.calendar_month,
           Icons.add,
           Icons.leaderboard,
           Icons.person,

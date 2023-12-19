@@ -11,9 +11,4 @@ abstract class ITaskRepository
 }
 
 abstract class ITaskJsonRepository
-    implements GenericRepository<String, String, String> {
-  Future<List<String>> findAllByDay(
-      {required DateTime dateTime, required String idc});
-  Future<List<String>> findAllByCategory(
-      {required TaskCategory category, required String idc});
-}
+    implements GenericRepository<String, String, String> {}

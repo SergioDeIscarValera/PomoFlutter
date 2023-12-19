@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: Themes.LIGHT.data,
       darkTheme: Themes.DARK.data,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       //themeMode: ThemeMode.system,
 
       initialBinding: BindingsBuilder(() {

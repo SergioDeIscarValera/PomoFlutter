@@ -1,8 +1,8 @@
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
+import 'package:PomoFlutter/content/home/pages/calendar_page.dart';
 import 'package:PomoFlutter/content/home/pages/statistics_page.dart';
 import 'package:PomoFlutter/content/home/pages/task_form_page.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
-import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
 import 'package:PomoFlutter/content/home/widgets/my_bottom_navigation.dart';
 import 'package:PomoFlutter/content/home/widgets/side_navigation_menu.dart';
 import 'package:PomoFlutter/themes/colors.dart';
@@ -10,6 +10,7 @@ import 'package:PomoFlutter/widgets/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'home_page.dart';
+import 'profile_page.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -103,26 +104,19 @@ class MainBody extends StatelessWidget {
           authController: authController,
           mainController: mainController,
         ),
+        CalendarPage(
+          authController: authController,
+          mainController: mainController,
+        ),
         TaskFormPage(
           mainController: mainController,
         ),
         StatisticsPage(
           mainController: mainController,
         ),
-        GenericTemplate(
-          onIconTap: () {
-            mainController.setPage(0);
-          },
-          title: "profile_title".tr,
-          body: Container(
-            color: Colors.purple,
-            child: ElevatedButton(
-              onPressed: () {
-                authController.signOut();
-              },
-              child: Text("logout".tr),
-            ),
-          ),
+        ProfilePage(
+          authController: authController,
+          mainController: mainController,
         ),
       ],
     );

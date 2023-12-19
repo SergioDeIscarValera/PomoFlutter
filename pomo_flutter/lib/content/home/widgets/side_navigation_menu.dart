@@ -49,12 +49,14 @@ class SideNavigationMenu extends StatelessWidget {
             ..._generateIcons(
               [
                 Icons.home,
+                Icons.calendar_month,
                 Icons.add,
                 Icons.leaderboard,
                 Icons.person,
               ],
               [
                 "app_name".tr,
+                "calendar_title".tr,
                 "task_form_title".tr,
                 "statics_title".tr,
                 "profile_title".tr,
