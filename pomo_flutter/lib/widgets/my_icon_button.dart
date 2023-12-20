@@ -7,12 +7,14 @@ class MyIconButton extends StatelessWidget {
     required this.onTap,
     required this.iconColor,
     required this.backgroundColor,
+    this.size = 25,
   });
 
   final IconData icon;
   final Function() onTap;
   final Color iconColor;
   final Color backgroundColor;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,7 @@ class MyIconButton extends StatelessWidget {
           child: Icon(
             icon,
             color: iconColor,
+            size: size,
           ),
         ),
       ),

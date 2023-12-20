@@ -1,6 +1,7 @@
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/calendary_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
+import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
 import 'package:PomoFlutter/content/home/widgets/task_list.dart';
 import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
@@ -26,6 +27,7 @@ class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CalendaryController calendaryController = Get.find();
+    final TimerController timerController = Get.find();
     return GenericTemplate(
       title: "calendar_title".tr,
       onIconTap: () {
@@ -119,6 +121,7 @@ class CalendarPage extends StatelessWidget {
                   key: Key(task.id),
                   task: task,
                   now: mainController.now.value,
+                  timerController: timerController,
                 ),
                 scrollable: true,
               ),

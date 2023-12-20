@@ -1,8 +1,8 @@
 import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/storage/controller/home_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
+import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list_item.dart';
 import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:PomoFlutter/content/home/widgets/my_button.dart';
 import 'package:PomoFlutter/content/home/widgets/task_list.dart';
+import 'package:PomoFlutter/content/home/widgets/task_list_item_play_action.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({Key? key}) : super(key: key);
@@ -19,12 +20,14 @@ class TaskListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     MainController mainController = Get.find();
     HomeController homeController = Get.find();
+    TimerController timerController = Get.find();
     return Scaffold(
       backgroundColor: MyColors.CURRENT.color,
       body: SafeArea(
         child: TaskListBody(
           mainController: mainController,
           homeController: homeController,
+          timerController: timerController,
         ),
       ),
     );
@@ -36,10 +39,12 @@ class TaskListBody extends StatelessWidget {
     Key? key,
     required this.mainController,
     required this.homeController,
+    required this.timerController,
   }) : super(key: key);
 
   final MainController mainController;
   final HomeController homeController;
+  final TimerController timerController;
 
   @override
   Widget build(BuildContext context) {
@@ -156,10 +161,10 @@ class TaskListBody extends StatelessWidget {
                   otherFlex: context.width > 1100 ? 1 : 0,
                   child: TaskList(
                     mapTasks: homeController.filteredTask,
-                    itemList: (task) => TaskListItem(
+                    itemList: (task) => TaskListItemPlayAction(
                       key: Key(task.id),
                       task: task,
-                      onTap: (task) {},
+                      timerController: timerController,
                     ),
                     scrollable: true,
                   ),

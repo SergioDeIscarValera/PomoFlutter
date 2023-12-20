@@ -1,9 +1,9 @@
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/home_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
+import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
 import 'package:PomoFlutter/content/home/widgets/task_list.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list_item.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
@@ -11,8 +11,8 @@ import 'package:PomoFlutter/widgets/generic_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-
-import '../widgets/welcome_text.dart';
+import 'package:PomoFlutter/content/home/widgets/task_list_item_play_action.dart';
+import 'package:PomoFlutter/content/home/widgets/welcome_text.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -23,9 +23,11 @@ class HomePage extends StatelessWidget {
 
   final AuthController authController;
   final MainController mainController;
+
   @override
   Widget build(BuildContext context) {
-    HomeController homeController = Get.find();
+    final HomeController homeController = Get.find();
+    final TimerController timerController = Get.find();
     return GenericTemplate(
       onIconTap: () {
         mainController.setPage(0);
@@ -41,7 +43,10 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 20),
           TaskTotalStatus(homeController: homeController),
           const SizedBox(height: 30),
-          ListOfTask(homeController: homeController),
+          ListOfTask(
+            homeController: homeController,
+            timerController: timerController,
+          ),
           const SizedBox(height: 30),
         ],
       ),
@@ -53,9 +58,11 @@ class ListOfTask extends StatelessWidget {
   const ListOfTask({
     super.key,
     required this.homeController,
+    required this.timerController,
   });
 
   final HomeController homeController;
+  final TimerController timerController;
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +96,10 @@ class ListOfTask extends StatelessWidget {
         const SizedBox(height: 10),
         TaskList(
           mapTasks: homeController.todayTasks,
-          itemList: (task) => TaskListItem(
+          itemList: (task) => TaskListItemPlayAction(
             key: Key(task.id),
             task: task,
-            onTap: (task) {},
+            timerController: timerController,
           ),
           limit: true,
         )

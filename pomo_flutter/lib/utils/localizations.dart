@@ -97,6 +97,12 @@ class MyLocalizations extends Translations {
           "user_config": "User configuration",
           "logout": "Logout",
           "aparence_config": "Appearance configuration",
+          "sessions_now": "{completed} of {total} sessions",
+          "delete_task": "Delete task",
+          "delete_task_message": "Are you sure you want to delete this task?",
+          "confirm": "Confirm",
+          "cancel": "Cancel",
+          "task_stopped": "Task stopped",
         },
         'es_ES': {
           "app_name": "Pomo Flutter",
@@ -194,6 +200,13 @@ class MyLocalizations extends Translations {
           "user_config": "Configuración de usuario",
           "logout": "Cerrar sesión",
           "aparence_config": "Configuración de apariencia",
+          "sessions_now": "{completed} de {total} sesiones",
+          "delete_task": "Borrar tarea",
+          "delete_task_message":
+              "¿Estás seguro de que quieres borrar esta tarea?",
+          "confirm": "Confirmar",
+          "cancel": "Cancelar",
+          "task_stopped": "Tarea detenida",
         },
       };
 }

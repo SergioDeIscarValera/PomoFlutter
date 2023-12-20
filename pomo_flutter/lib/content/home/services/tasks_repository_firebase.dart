@@ -35,7 +35,7 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
 
   @override
   Future<void> delete({required String entity, required String idc}) async {
-    return await deleteById(id: entity, idc: idc);
+    return await deleteById(id: jsonDecode(entity)["id"], idc: idc);
   }
 
   @override

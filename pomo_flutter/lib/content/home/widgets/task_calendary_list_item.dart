@@ -1,5 +1,6 @@
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_colors.dart';
+import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,12 @@ class TaskCalendaryListItem extends StatelessWidget {
     super.key,
     required this.task,
     required this.now,
+    required this.timerController,
   });
 
   final Task task;
   final DateTime now;
+  final TimerController timerController;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +79,7 @@ class TaskCalendaryListItem extends StatelessWidget {
                       ],
                     ),
                     TaskRoundedAction(
-                      onTap: (task) {},
+                      timerController: timerController,
                       task: task,
                       size: context.width < 500 ? 50.0 : 70.0,
                     ),

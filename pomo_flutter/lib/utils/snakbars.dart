@@ -19,4 +19,13 @@ class MySnackBar {
       colorText: MyColors.LIGHT.color,
     );
   }
+
+  static void snackWarning(String message) {
+    Get.snackbar(
+      "Warning",
+      message.tr,
+      backgroundColor: MyColors.WARNING.color.withOpacity(0.5),
+      colorText: MyColors.LIGHT.color,
+    );
+  }
 }

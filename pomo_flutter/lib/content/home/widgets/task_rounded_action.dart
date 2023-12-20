@@ -1,17 +1,21 @@
 import 'package:PomoFlutter/content/home/models/task.dart';
+import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
+import 'package:PomoFlutter/routes/app_routes.dart';
 import 'package:PomoFlutter/themes/colors.dart';
+import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class TaskRoundedAction extends StatelessWidget {
   const TaskRoundedAction({
     super.key,
-    required this.onTap,
+    required this.timerController,
     required this.task,
     required this.size,
   });
 
-  final Function(Task) onTap;
+  final TimerController timerController;
   final Task task;
   final double size;
 
@@ -21,7 +25,33 @@ class TaskRoundedAction extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {
-          onTap(task);
+          if (!task.isFinished) {
+            timerController.selectTask(task);
+            Get.toNamed(Routes.TIMER_PAGES.path);
+          } else {
+            Get.defaultDialog(
+              title: 'delete_task'.tr,
+              middleText: 'delete_task_message'.tr,
+              textConfirm: "confirm".tr,
+              textCancel: "cancel".tr,
+              titleStyle: MyTextStyles.h2.textStyle.copyWith(
+                color: MyColors.CONTRARY.color,
+              ),
+              middleTextStyle: MyTextStyles.p.textStyle,
+              cancelTextColor: MyColors.CONTRARY.color,
+              confirmTextColor: MyColors.DANGER.color,
+              backgroundColor:
+                  Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+              buttonColor: MyColors.CURRENT.color,
+              onConfirm: () {
+                timerController.deleteTask(task);
+                Get.back();
+              },
+              onCancel: () {
+                Get.back();
+              },
+            );
+          }
         },
         child: Stack(
           children: [
@@ -80,6 +110,7 @@ class TaskRoundedAction extends StatelessWidget {
               pointers: <GaugePointer>[
                 RangePointer(
                   width: 5,
+                  cornerStyle: CornerStyle.bothCurve,
                   value: task.workSessionsCompleted.toDouble(),
                   color: isFinished
                       ? MyColors.DANGER.color

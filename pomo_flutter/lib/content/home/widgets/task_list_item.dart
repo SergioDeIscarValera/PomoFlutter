@@ -6,18 +6,17 @@ import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:PomoFlutter/widgets/generic_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'task_rounded_action.dart';
 
 class TaskListItem extends StatelessWidget {
   const TaskListItem({
     super.key,
     required this.task,
-    required this.onTap,
+    required this.tail,
     this.bottomMargin = 10,
   });
 
-  final Function(Task) onTap;
   final Task task;
+  final Widget tail;
   final double bottomMargin;
 
   @override
@@ -90,12 +89,7 @@ class TaskListItem extends StatelessWidget {
             ],
           ),
           const SizedBox(width: 10),
-          //Play
-          TaskRoundedAction(
-            onTap: onTap,
-            task: task,
-            size: size,
-          ),
+          tail,
         ],
       ),
     );

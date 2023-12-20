@@ -9,6 +9,7 @@ enum Routes {
 
   MAIN,
   LIST_TASKS,
+  TIMER_PAGES,
 }
 
 extension RoutesPath on Routes {
@@ -33,6 +34,8 @@ extension RoutesPath on Routes {
         return "/home";
       case Routes.LIST_TASKS:
         return "/home/list-tasks";
+      case Routes.TIMER_PAGES:
+        return "/home/timer";
     }
   }
 }

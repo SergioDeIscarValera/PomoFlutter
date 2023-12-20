@@ -71,12 +71,13 @@ class MainPage extends StatelessWidget {
               ),
             )
           : null,
+      //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: context.width >= 500 && context.width < 1100
           ? FloatingActionButton(
               onPressed: () {
                 scaffoldKey.currentState!.openDrawer();
               },
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.menu),
             )
           : null,
     );
