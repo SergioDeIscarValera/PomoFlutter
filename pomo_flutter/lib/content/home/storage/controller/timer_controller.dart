@@ -7,6 +7,7 @@ import 'package:PomoFlutter/content/home/services/task_repository.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/statistics_controller.dart';
 import 'package:PomoFlutter/utils/snakbars.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 
 class TimerController extends GetxController {
@@ -18,6 +19,7 @@ class TimerController extends GetxController {
   final Rx<TimerStatus> timerStatus = TimerStatus.WORKING.obs;
   final RxBool isPlaying = false.obs;
 
+  final AudioPlayer _audioCache = AudioPlayer();
   int _lastTime = 0;
 
   final TaskRepository _taskRepository = TaskRepository();
@@ -27,12 +29,15 @@ class TimerController extends GetxController {
   late final Cronometro _cronometro = Cronometro(onTick: () {
     if (current.value >= currentMax.value) {
       _cronometro.pausar();
+      //Play sound
+      _playAlarmSound();
       if (timerStatus.value == TimerStatus.WORKING) {
         taskSelected.value?.addWorkSession();
         if (taskSelected.value?.isFinished ?? false) {
-          Get.back();
           saveTask(0);
           _saveStatistics();
+          _stopAlarmSound();
+          Get.back();
           return;
         }
       }
@@ -134,6 +139,15 @@ class TimerController extends GetxController {
       current.value.toInt() - _lastTime,
     );
   }
+
+  void _playAlarmSound() async {
+    await _audioCache
+        .play(DeviceFileSource("assets/sounds/Kitchen-Timer-Alarm.mp3"));
+  }
+
+  void _stopAlarmSound() async {
+    await _audioCache.stop();
+  }
 }
 
 class Cronometro {
@@ -144,8 +158,8 @@ class Cronometro {
   Cronometro({required this.onTick});
 
   void iniciar() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      //_timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
+    //_timer = Timer.periodic(const Duration(seconds: 1), (_) {
+    _timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
       if (!_pausado) {
         onTick();
       }

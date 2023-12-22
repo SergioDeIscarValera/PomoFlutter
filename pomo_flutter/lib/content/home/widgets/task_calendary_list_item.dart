@@ -66,25 +66,30 @@ class TaskCalendaryListItem extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              task.title,
-                              style: MyTextStyles.p.textStyle.copyWith(
-                                color: MyColors.LIGHT.color,
-                                fontSize: context.width < 500 ? 18 : 22,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                task.title,
+                                style: MyTextStyles.p.textStyle.copyWith(
+                                  color: MyColors.LIGHT.color,
+                                  fontSize: context.width < 500 ? 18 : 22,
+                                ),
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
                               ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              _getTimeFromTask(task),
-                              style: MyTextStyles.p.textStyle.copyWith(
-                                color: MyColors.LIGHT.color.withOpacity(0.8),
-                                fontSize: context.width < 500 ? 12 : 16,
+                              const SizedBox(height: 5),
+                              Text(
+                                _getTimeFromTask(task),
+                                style: MyTextStyles.p.textStyle.copyWith(
+                                  color: MyColors.LIGHT.color.withOpacity(0.8),
+                                  fontSize: context.width < 500 ? 12 : 16,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         TaskRoundedAction(
                           timerController: timerController,
