@@ -1,5 +1,6 @@
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_colors.dart';
+import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
@@ -27,6 +28,7 @@ class TaskCalendaryListItem extends StatelessWidget {
         now.month == task.dateTime.month &&
         now.year == task.dateTime.year &&
         now.hour == task.dateTime.hour;
+    final MainController mainController = Get.find();
     return Column(
       children: [
         Row(
@@ -41,49 +43,57 @@ class TaskCalendaryListItem extends StatelessWidget {
             ),
             const SizedBox(width: 15),
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      task.color.color.withOpacity(0.7),
-                      task.color.color.withOpacity(0.4),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding: EdgeInsets.all(context.width < 500 ? 12 : 24),
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () {
+                    mainController.deleteTask(task);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          task.color.color.withOpacity(0.7),
+                          task.color.color.withOpacity(0.4),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding: EdgeInsets.all(context.width < 500 ? 12 : 24),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          task.title,
-                          style: MyTextStyles.p.textStyle.copyWith(
-                            color: MyColors.LIGHT.color,
-                            fontSize: context.width < 500 ? 18 : 22,
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              task.title,
+                              style: MyTextStyles.p.textStyle.copyWith(
+                                color: MyColors.LIGHT.color,
+                                fontSize: context.width < 500 ? 18 : 22,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              _getTimeFromTask(task),
+                              style: MyTextStyles.p.textStyle.copyWith(
+                                color: MyColors.LIGHT.color.withOpacity(0.8),
+                                fontSize: context.width < 500 ? 12 : 16,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 5),
-                        Text(
-                          _getTimeFromTask(task),
-                          style: MyTextStyles.p.textStyle.copyWith(
-                            color: MyColors.LIGHT.color.withOpacity(0.8),
-                            fontSize: context.width < 500 ? 12 : 16,
-                          ),
+                        TaskRoundedAction(
+                          timerController: timerController,
+                          task: task,
+                          size: context.width < 500 ? 50.0 : 70.0,
                         ),
                       ],
                     ),
-                    TaskRoundedAction(
-                      timerController: timerController,
-                      task: task,
-                      size: context.width < 500 ? 50.0 : 70.0,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),

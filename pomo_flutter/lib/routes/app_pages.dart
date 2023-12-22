@@ -6,6 +6,7 @@ import 'package:PomoFlutter/content/auth/pages/register_page.dart';
 import 'package:PomoFlutter/content/auth/storage/binding/email_verification_binding.dart';
 import 'package:PomoFlutter/content/first_time/pages/first_time_page.dart';
 import 'package:PomoFlutter/content/first_time/storage/binding/first_time_binding.dart';
+import 'package:PomoFlutter/content/home/pages/congratulations_page.dart';
 import 'package:PomoFlutter/content/home/pages/main_page.dart';
 import 'package:PomoFlutter/content/home/pages/task_list_page.dart';
 import 'package:PomoFlutter/content/home/pages/timer_page.dart';
@@ -13,6 +14,7 @@ import 'package:PomoFlutter/content/home/storage/binding/calendary_binding.dart'
 import 'package:PomoFlutter/content/home/storage/binding/home_binding.dart';
 import 'package:PomoFlutter/content/home/storage/binding/main_binding.dart';
 import 'package:PomoFlutter/content/home/storage/binding/profile_binding.dart';
+import 'package:PomoFlutter/content/home/storage/binding/statistics_binding.dart';
 import 'package:PomoFlutter/content/home/storage/binding/task_form_binding.dart';
 import 'package:PomoFlutter/content/home/storage/binding/timer_binding.dart';
 import 'package:PomoFlutter/content/splash/pages/splash_page.dart';
@@ -63,6 +65,7 @@ class AppPages {
         ProfileBinding(),
         CalendaryBinding(),
         TimerBinding(),
+        StatisticsBinding(),
       ],
     ),
     GetPage(
@@ -72,6 +75,10 @@ class AppPages {
     GetPage(
       name: Routes.TIMER_PAGES.path,
       page: () => const TimerPage(),
+    ),
+    GetPage(
+      name: Routes.CONGRATULATIONS.path,
+      page: () => const CongratulationsPage(),
     ),
   ];
 }

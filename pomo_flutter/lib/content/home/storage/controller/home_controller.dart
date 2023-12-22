@@ -9,20 +9,25 @@ class HomeController extends GetxController {
   final Rx<TaskCategory?> categoryFilterSelected = Rx<TaskCategory?>(null);
   final RxMap<String, Task> filteredTask = <String, Task>{}.obs;
 
-  final RxDouble _taskProgress = 0.0.obs;
-  RxDouble get taskProgress => _taskProgress;
+  final RxDouble taskProgress = 0.0.obs;
 
   final MainController mainController = Get.find();
   final TaskRepository _taskRepository = TaskRepository();
 
   @override
   void onInit() async {
-    _taskProgress.value = _getFinishedPercentage(todayTasks);
+    taskProgress.value = _getFinishedPercentage(todayTasks);
     todayTasks.listen((event) {
-      _taskProgress.value = _getFinishedPercentage(event);
+      taskProgress.value = _getFinishedPercentage(event);
+
+      filteredTask.clear();
+      for (var task in todayTasks.values) {
+        filteredTask[task.id] = task;
+      }
       _filterTasks();
     });
 
+    filteredTask.clear();
     for (var task in todayTasks.values) {
       filteredTask[task.id] = task;
     }

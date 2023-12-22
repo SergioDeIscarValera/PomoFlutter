@@ -39,10 +39,15 @@ class GenericTemplate extends StatelessWidget {
                     ),
             ),
             const SizedBox(width: 10),
-            Text(
-              title,
-              style: MyTextStyles.h1.textStyle.copyWith(
-                fontSize: titleSize,
+            Expanded(
+              child: Text(
+                title,
+                style: MyTextStyles.h1.textStyle.copyWith(
+                  fontSize: titleSize,
+                ),
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
             ),
           ],

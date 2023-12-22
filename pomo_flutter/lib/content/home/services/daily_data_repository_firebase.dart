@@ -1,20 +1,20 @@
 import 'dart:convert';
 
-import 'package:PomoFlutter/content/home/services/interface_task_repository.dart';
+import 'package:PomoFlutter/content/home/services/interface_daily_data_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class TaskRepositoryFirebase implements ITaskJsonRepository {
-  static final TaskRepositoryFirebase _singleton =
-      TaskRepositoryFirebase._internal();
+class DailyDataRepositoryFirebase implements IDailyDataJsonRepository {
+  static final DailyDataRepositoryFirebase _singleton =
+      DailyDataRepositoryFirebase._internal();
 
-  factory TaskRepositoryFirebase() {
+  factory DailyDataRepositoryFirebase() {
     return _singleton;
   }
 
-  TaskRepositoryFirebase._internal();
+  DailyDataRepositoryFirebase._internal();
 
-  static const String _collection = "tasks";
-  static const String _taskList = "tasks";
+  static const String _collection = "dailyData";
+  static const String _taskList = "dailyData";
 
   Future<MapEntry<DocumentReference, DocumentSnapshot<Object?>?>>
       _getRefAndSnapshot({required String email}) async {
@@ -29,13 +29,30 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
   }
 
   @override
+  void addListener(
+      {required String idc, required Function(List<String> p1) listener}) {
+    FirebaseFirestore.instance
+        .collection(_collection)
+        .doc(idc)
+        .snapshots()
+        .listen((DocumentSnapshot snapshot) {
+      if (!snapshot.exists) return;
+      var data = snapshot.data() as Map<String, dynamic>?;
+      if (data == null || data[_taskList] == null) return;
+      listener((data[_taskList] as List<dynamic>)
+          .map((e) => jsonEncode(e))
+          .toList());
+    });
+  }
+
+  @override
   Future<int> count({required String idc}) async {
     return (await findAll(idc: idc)).length;
   }
 
   @override
   Future<void> delete({required String entity, required String idc}) async {
-    return await deleteById(id: jsonDecode(entity)["id"], idc: idc);
+    return await deleteById(id: jsonDecode(entity)["date"], idc: idc);
   }
 
   @override
@@ -48,20 +65,6 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
   }
 
   @override
-  Future<void> deleteById({required String id, required String idc}) async {
-    var docRef = await _getRefAndSnapshot(email: idc);
-    if (docRef.value == null) {
-      return;
-    }
-    // Filter where id is in the list and remove it
-    List<dynamic> updatedList = (docRef.value![_taskList] as List<dynamic>)
-        .where((task) => task['id'] != id)
-        .toList();
-
-    docRef.key.update({_taskList: updatedList});
-  }
-
-  @override
   Future<void> deleteAllWhere(
       {required List<String> ids, required String idc}) async {
     var docRef = await _getRefAndSnapshot(email: idc);
@@ -69,7 +72,21 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
       return;
     }
     List<dynamic> updatedList = (docRef.value![_taskList] as List<dynamic>)
-        .where((task) => !ids.contains(task['id']))
+        .where((task) => !ids.contains(task['date']))
+        .toList();
+
+    docRef.key.update({_taskList: updatedList});
+  }
+
+  @override
+  Future<void> deleteById({required String id, required String idc}) async {
+    var docRef = await _getRefAndSnapshot(email: idc);
+    if (docRef.value == null) {
+      return;
+    }
+    // Filter where id is in the list and remove it
+    List<dynamic> updatedList = (docRef.value![_taskList] as List<dynamic>)
+        .where((task) => task['date'] != id)
         .toList();
 
     docRef.key.update({_taskList: updatedList});
@@ -77,7 +94,7 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
 
   @override
   Future<bool> exists({required String entity, required String idc}) async {
-    return await existsById(id: jsonDecode(entity)["id"], idc: idc);
+    return await existsById(id: jsonDecode(entity)["date"], idc: idc);
   }
 
   @override
@@ -118,7 +135,7 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
     } else {
       var currentTasks = (docRef.value![_taskList] as List<dynamic>);
       var existingTaskIndex = currentTasks.indexWhere(
-        (task) => task['id'] == json['id'],
+        (task) => task['date'] == json['date'],
       );
       if (existingTaskIndex != -1) {
         // Update the existing task if found
@@ -137,10 +154,8 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
   }
 
   @override
-  Future<List<String>?> saveAll({
-    required List<String> entities,
-    required String idc,
-  }) async {
+  Future<List<String>?> saveAll(
+      {required List<String> entities, required String idc}) async {
     for (var entity in entities) {
       var result = await save(entity: entity, idc: idc);
       if (result == null) {
@@ -148,25 +163,6 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
       }
     }
     return Future.value(entities);
-  }
-
-  @override
-  void addListener({
-    required String idc,
-    required Function(List<String>) listener,
-  }) {
-    FirebaseFirestore.instance
-        .collection(_collection)
-        .doc(idc)
-        .snapshots()
-        .listen((DocumentSnapshot snapshot) {
-      if (!snapshot.exists) return;
-      var data = snapshot.data() as Map<String, dynamic>?;
-      if (data == null || data[_taskList] == null) return;
-      listener((data[_taskList] as List<dynamic>)
-          .map((e) => jsonEncode(e))
-          .toList());
-    });
   }
 
   List<String> _findAllUsingSnapshot(DocumentSnapshot snapshot) {
@@ -178,46 +174,3 @@ class TaskRepositoryFirebase implements ITaskJsonRepository {
         .toList();
   }
 }
-
-/*
-{
-  "tasks": [
-    {
-      "id": "074dffd2-ffc0-49f8-98f6-10c6b969b53c",
-      "title": "Task 1",
-      "description": "Description 1",
-      "dateTime": "2021-08-01T00:00:00.000Z",
-      "category": "work",
-      "color": "red",
-      "workSessions": 4,
-      "workSessionTime": 25,
-      "longBreakTime": 15,
-      "shortBreakTime": 5,
-    },
-    {
-      "id": "074dffd2-ffc0-49f8-98f6-10c6b969b54c",
-      "title": "Task 2",
-      "description": "Description 2",
-      "dateTime": "2021-08-01T00:00:00.000Z",
-      "category": "work",
-      "color": "blue",
-      "workSessions": 4,
-      "workSessionTime": 25,
-      "longBreakTime": 15,
-      "shortBreakTime": 5,
-    },
-    {
-      "id": "074dffd2-ffc0-49f8-98f6-10c6b969b55c",
-      "title": "Task 3",
-      "description": "Description 3",
-      "dateTime": "2021-08-01T00:00:00.000Z",
-      "category": "work",
-      "color": "green",
-      "workSessions": 4,
-      "workSessionTime": 25,
-      "longBreakTime": 15,
-      "shortBreakTime": 5,
-    },
-  ],
-}
-*/

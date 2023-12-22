@@ -9,7 +9,9 @@ class TaskListItemTimer extends StatelessWidget {
     Key? key,
     required this.task,
   }) : super(key: key);
+
   final Task task;
+
   @override
   Widget build(BuildContext context) {
     return TaskListItem(

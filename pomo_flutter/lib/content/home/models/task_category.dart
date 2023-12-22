@@ -1,3 +1,4 @@
+import 'package:PomoFlutter/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -45,6 +46,19 @@ extension TaskCategoryExten on TaskCategory {
         return "shopping";
       case TaskCategory.others:
         return "others";
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case TaskCategory.work:
+        return MyColors.DANGER.color;
+      case TaskCategory.personal:
+        return MyColors.PRIMARY.color;
+      case TaskCategory.shopping:
+        return MyColors.SUCCESS.color;
+      case TaskCategory.others:
+        return MyColors.WARNING.color;
     }
   }
 }

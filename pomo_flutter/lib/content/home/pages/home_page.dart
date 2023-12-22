@@ -214,20 +214,22 @@ class TaskTotalStatus extends StatelessWidget {
           pointers: <GaugePointer>[
             RangePointer(
               value: value,
-              cornerStyle: CornerStyle.bothCurve,
+              cornerStyle:
+                  value == 100 ? CornerStyle.bothFlat : CornerStyle.bothCurve,
               color: MyColors.SECONDARY.color,
             ),
-            WidgetPointer(
-              value: value - 2.5, // -2.5 to center the widget
-              child: Container(
-                decoration: BoxDecoration(
-                  color: MyColors.LIGHT.color,
-                  borderRadius: BorderRadius.circular(100),
+            if (value != 100)
+              WidgetPointer(
+                value: value - 1.5, // -2.5 to center the widget
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: MyColors.LIGHT.color,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  width: 5,
+                  height: 5,
                 ),
-                width: 5,
-                height: 5,
               ),
-            ),
           ],
           axisLineStyle: AxisLineStyle(
             color: MyColors.CURRENT.color,

@@ -5,6 +5,7 @@ import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/timer_status.dart';
 import 'package:PomoFlutter/content/home/services/task_repository.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
+import 'package:PomoFlutter/content/home/storage/controller/statistics_controller.dart';
 import 'package:PomoFlutter/utils/snakbars.dart';
 import 'package:get/get.dart';
 
@@ -17,8 +18,11 @@ class TimerController extends GetxController {
   final Rx<TimerStatus> timerStatus = TimerStatus.WORKING.obs;
   final RxBool isPlaying = false.obs;
 
+  int _lastTime = 0;
+
   final TaskRepository _taskRepository = TaskRepository();
-  final AuthController _authController = Get.find<AuthController>();
+  final AuthController _authController = Get.find();
+  final StatisticsController _statisticsController = Get.find();
 
   late final Cronometro _cronometro = Cronometro(onTick: () {
     if (current.value >= currentMax.value) {
@@ -28,15 +32,18 @@ class TimerController extends GetxController {
         if (taskSelected.value?.isFinished ?? false) {
           Get.back();
           saveTask(0);
+          _saveStatistics();
           return;
         }
       }
+      _saveStatistics();
       taskSelected.value?.timerStatus = timerStatus.value == TimerStatus.WORKING
           ? TimerStatus.BREAK
           : TimerStatus.WORKING;
       taskSelected.refresh();
       saveTask(0);
       current.value = 0;
+      _lastTime = 0;
       isPlaying.value = false;
       return;
     }
@@ -54,6 +61,7 @@ class TimerController extends GetxController {
         currentMax.value = (task?.shortBreakTime.toDouble() ?? 1.0) * 60.0;
       }
       current.value = task?.timeSpent.toDouble() ?? 0.0;
+      _lastTime = current.value.toInt();
       isPlaying.value = false;
       timerStatus.value = task?.timerStatus ?? TimerStatus.WORKING;
     });
@@ -62,7 +70,10 @@ class TimerController extends GetxController {
       if (!value) {
         _cronometro.pausar();
         saveTask(current.value);
+        // Add time to statistics
+        _saveStatistics();
       } else {
+        _lastTime = current.value.toInt();
         _cronometro.continuar();
       }
     });
@@ -70,7 +81,7 @@ class TimerController extends GetxController {
     current.listen((value) {
       // 00:00 format
       currentFormatted.value = "${(value ~/ 60).toString().padLeft(2, '0')}:"
-          "${(value % 60).toString().padLeft(2, '0')}";
+          "${(value % 60).toInt().toString().padLeft(2, '0')}";
     });
     super.onInit();
   }
@@ -100,9 +111,13 @@ class TimerController extends GetxController {
 
   void goBack(MainController mainController) {
     mainController.setPage(0);
-    saveTask(current.value);
-    Get.back();
-    MySnackBar.snackWarning("task_stopped".tr);
+    if (isPlaying.value) {
+      saveTask(current.value);
+      Get.back();
+      MySnackBar.snackWarning("task_stopped".tr);
+    } else {
+      Get.back();
+    }
   }
 
   void saveTask(double timeSpentInThisWorkSession) async {
@@ -111,9 +126,13 @@ class TimerController extends GetxController {
         entity: taskSelected.value!, idc: _authController.firebaseUser!.email!);
   }
 
-  void deleteTask(Task task) {
-    _taskRepository.delete(
-        entity: task, idc: _authController.firebaseUser!.email!);
+  void _saveStatistics() {
+    _statisticsController.addTime(
+      timerStatus.value,
+      taskSelected.value!.category,
+      taskSelected.value!.dateTime,
+      current.value.toInt() - _lastTime,
+    );
   }
 }
 
@@ -125,8 +144,8 @@ class Cronometro {
   Cronometro({required this.onTick});
 
   void iniciar() {
-    //_timer = Timer.periodic(const Duration(seconds: 1), (_) {
-    _timer = Timer.periodic(const Duration(milliseconds: 100), (_) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      //_timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
       if (!_pausado) {
         onTick();
       }

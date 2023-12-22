@@ -1,8 +1,8 @@
 import 'package:PomoFlutter/content/home/models/task.dart';
+import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
 import 'package:PomoFlutter/themes/colors.dart';
-import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -21,6 +21,7 @@ class TaskRoundedAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MainController mainController = Get.find();
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -29,28 +30,7 @@ class TaskRoundedAction extends StatelessWidget {
             timerController.selectTask(task);
             Get.toNamed(Routes.TIMER_PAGES.path);
           } else {
-            Get.defaultDialog(
-              title: 'delete_task'.tr,
-              middleText: 'delete_task_message'.tr,
-              textConfirm: "confirm".tr,
-              textCancel: "cancel".tr,
-              titleStyle: MyTextStyles.h2.textStyle.copyWith(
-                color: MyColors.CONTRARY.color,
-              ),
-              middleTextStyle: MyTextStyles.p.textStyle,
-              cancelTextColor: MyColors.CONTRARY.color,
-              confirmTextColor: MyColors.DANGER.color,
-              backgroundColor:
-                  Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
-              buttonColor: MyColors.CURRENT.color,
-              onConfirm: () {
-                timerController.deleteTask(task);
-                Get.back();
-              },
-              onCancel: () {
-                Get.back();
-              },
-            );
+            mainController.deleteTask(task);
           }
         },
         child: Stack(
@@ -109,8 +89,9 @@ class TaskRoundedAction extends StatelessWidget {
               radiusFactor: 0.8,
               pointers: <GaugePointer>[
                 RangePointer(
-                  width: 5,
-                  cornerStyle: CornerStyle.bothCurve,
+                  width: 6,
+                  cornerStyle:
+                      isFinished ? CornerStyle.bothFlat : CornerStyle.bothCurve,
                   value: task.workSessionsCompleted.toDouble(),
                   color: isFinished
                       ? MyColors.DANGER.color

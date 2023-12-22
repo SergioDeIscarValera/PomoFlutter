@@ -88,6 +88,7 @@ class TaskFormPage extends StatelessWidget {
                     color: MyColors.CONTRARY.color,
                     validator: formValidator.isValidTaskName,
                     icon: Icons.title,
+                    mainController: mainController,
                   ),
                   const SizedBox(height: spaceBetween),
                   //Description input
@@ -102,6 +103,7 @@ class TaskFormPage extends StatelessWidget {
                     color: MyColors.CONTRARY.color,
                     validator: formValidator.isValidTaskDescription,
                     icon: Icons.description,
+                    mainController: mainController,
                   ),
                   const SizedBox(height: spaceBetween),
                   //Date and time input
