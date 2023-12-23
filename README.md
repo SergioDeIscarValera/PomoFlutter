@@ -41,4 +41,4 @@ Cuenta con una sección de estadísticas, donde se puede ver el tiempo de trabaj
 
 ## Links
 
-[Web PomoFlutter](hpomo-flutter.web.app)
+[Web PomoFlutter](https://pomo-flutter.web.app/)
