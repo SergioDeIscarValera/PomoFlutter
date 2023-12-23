@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
 import 'package:PomoFlutter/content/home/models/task.dart';
+import 'package:PomoFlutter/content/home/models/task_comment.dart';
 import 'package:PomoFlutter/content/home/services/task_repository.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
 import 'package:PomoFlutter/themes/colors.dart';
@@ -20,6 +21,8 @@ class MainController extends GetxController {
   final TaskRepository _taskRepository = TaskRepository();
 
   final Rx<DateTime> now = DateTime.now().obs;
+
+  final TextEditingController _commentController = TextEditingController();
 
   @override
   void onInit() async {
@@ -93,6 +96,103 @@ class MainController extends GetxController {
 
   void _deleteTask(Task task) {
     _taskRepository.delete(
+        entity: task, idc: authController.firebaseUser!.email!);
+  }
+
+  void addComment(Rx<Task?> task) {
+    //Show dialog to add comment
+    Get.defaultDialog(
+      title: 'add_comment'.tr,
+      middleText: 'add_comment_message'.tr,
+      textConfirm: "confirm".tr,
+      textCancel: "cancel".tr,
+      titleStyle: MyTextStyles.h2.textStyle.copyWith(
+        color: MyColors.CONTRARY.color,
+      ),
+      middleTextStyle: MyTextStyles.p.textStyle,
+      cancelTextColor: MyColors.CONTRARY.color,
+      confirmTextColor: MyColors.CONTRARY.color,
+      backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+      buttonColor: MyColors.CURRENT.color,
+      content: Column(
+        children: [
+          TextField(
+            controller: _commentController,
+            decoration: InputDecoration(
+              hintText: 'comment'.tr,
+              hintStyle: MyTextStyles.p.textStyle.copyWith(
+                color: MyColors.CONTRARY.color,
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: MyColors.CONTRARY.color,
+                ),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: MyColors.CURRENT.color,
+                ),
+              ),
+            ),
+            style: MyTextStyles.p.textStyle.copyWith(
+              color: MyColors.CONTRARY.color,
+            ),
+          ),
+        ],
+      ),
+      onConfirm: () {
+        _addComment(task.value!);
+        task.refresh();
+        _commentController.clear();
+        Get.back();
+      },
+      onCancel: () {
+        Get.back();
+      },
+    );
+  }
+
+  void _addComment(Task task) {
+    final comment = TaskComment(
+      content: _commentController.text,
+      userPhotoUrl: authController.firebaseUser?.photoURL,
+      userName: authController.firebaseUser!.displayName ??
+          authController.firebaseUser!.email!.split('@')[0],
+    );
+
+    task.addComment(comment);
+    _taskRepository.save(
+        entity: task, idc: authController.firebaseUser!.email!);
+  }
+
+  void deleteComment(Rx<Task?> taskSelected, TaskComment comment) {
+    Get.defaultDialog(
+      title: 'delete_comment'.tr,
+      middleText: 'delete_comment_message'.tr,
+      textConfirm: "confirm".tr,
+      textCancel: "cancel".tr,
+      titleStyle: MyTextStyles.h2.textStyle.copyWith(
+        color: MyColors.CONTRARY.color,
+      ),
+      middleTextStyle: MyTextStyles.p.textStyle,
+      cancelTextColor: MyColors.CONTRARY.color,
+      confirmTextColor: MyColors.DANGER.color,
+      backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+      buttonColor: MyColors.CURRENT.color,
+      onConfirm: () {
+        _deleteComment(taskSelected.value!, comment);
+        taskSelected.refresh();
+        Get.back();
+      },
+      onCancel: () {
+        Get.back();
+      },
+    );
+  }
+
+  void _deleteComment(Task task, TaskComment comment) {
+    task.removeComment(comment);
+    _taskRepository.save(
         entity: task, idc: authController.firebaseUser!.email!);
   }
 }

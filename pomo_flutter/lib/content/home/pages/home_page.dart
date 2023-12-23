@@ -3,7 +3,8 @@ import 'package:PomoFlutter/content/home/storage/controller/home_controller.dart
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_list.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_list_item_play_action.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
@@ -11,7 +12,6 @@ import 'package:PomoFlutter/widgets/generic_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list_item_play_action.dart';
 import 'package:PomoFlutter/content/home/widgets/welcome_text.dart';
 
 class HomePage extends StatelessWidget {

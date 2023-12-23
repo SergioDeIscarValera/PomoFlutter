@@ -85,8 +85,6 @@ class AuthController extends GetxController {
     }
   }
 
-  void loginWithGithub() async {}
-
   void signOut() async {
     await _auth.signOut();
     firebaseUser = null;

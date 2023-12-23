@@ -1,4 +1,4 @@
-import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
+import 'package:PomoFlutter/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/widgets/my_splider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

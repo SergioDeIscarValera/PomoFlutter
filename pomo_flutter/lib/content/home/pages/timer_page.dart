@@ -3,14 +3,17 @@ import 'package:PomoFlutter/content/home/storage/controller/home_controller.dart
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list_item_timer.dart';
-import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/comments_list.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_list_item_timer.dart';
+import 'package:PomoFlutter/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
+import 'package:PomoFlutter/widgets/generic_container.dart';
 import 'package:PomoFlutter/widgets/my_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/commet_item.dart';
 
 class TimerPage extends StatelessWidget {
   const TimerPage({Key? key}) : super(key: key);
@@ -211,7 +214,52 @@ class TimerBody extends StatelessWidget {
                   }
                 }),
               ],
-            )
+            ),
+            const SizedBox(height: 30),
+            //Comments
+            GenericContainer(
+              direction: Axis.vertical,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "comments".tr,
+                        style: MyTextStyles.h2.textStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    //Button to add comment
+                    MyIconButton(
+                      icon: Icons.add,
+                      onTap: () {
+                        //timerController.addComment();
+                        mainController.addComment(
+                          timerController.taskSelected,
+                        );
+                        timerController.taskSelected.refresh();
+                      },
+                      iconColor: MyColors.LIGHT.color,
+                      backgroundColor: MyColors.SUCCESS.color,
+                      size: 30,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+                Obx(
+                  () => CommentsList(
+                    listCommets: timerController.taskSelected.value!.comments,
+                    itemList: (comment) => CommetItem(
+                      comment: comment,
+                      mainController: mainController,
+                      timerController: timerController,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
           ],
         ),
       ),

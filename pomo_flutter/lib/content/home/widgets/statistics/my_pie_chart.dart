@@ -27,7 +27,7 @@ class MyPieChart extends StatelessWidget {
         );
       }
     }
-    double space = context.width < 350 ? 100 : 50;
+    double space = context.width < 350 ? 150 : 100;
     return Container(
       padding: EdgeInsets.only(bottom: space),
       child: Stack(
@@ -73,6 +73,7 @@ class MyPieChart extends StatelessWidget {
                       child: Text(
                         e.key.name.tr,
                         style: MyTextStyles.p.textStyle.copyWith(
+                          fontSize: 14,
                           color: MyColors.LIGHT.color,
                         ),
                       ),
@@ -84,34 +85,5 @@ class MyPieChart extends StatelessWidget {
         ],
       ),
     );
-
-    /*Wrap(
-      children: [
-        
-        // Legend
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: totalTimeMap.entries
-              .map(
-                (e) => Container(
-                  decoration: BoxDecoration(
-                    color: e.key.color,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.all(5),
-                  child: Text(
-                    e.key.name.tr,
-                    style: MyTextStyles.p.textStyle.copyWith(
-                      color: MyColors.LIGHT.color,
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      ],
-    );*/
   }
 }

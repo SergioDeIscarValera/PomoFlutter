@@ -1,5 +1,5 @@
 import 'package:PomoFlutter/content/home/models/task.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list_item.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_list_item.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:flutter/material.dart';

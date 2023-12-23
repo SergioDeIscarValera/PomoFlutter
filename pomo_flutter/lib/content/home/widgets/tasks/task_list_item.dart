@@ -27,7 +27,7 @@ class TaskListItem extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () {
+        onLongPress: () {
           mainController.deleteTask(task);
         },
         child: Padding(

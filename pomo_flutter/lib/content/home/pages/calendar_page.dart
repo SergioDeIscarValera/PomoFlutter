@@ -3,16 +3,17 @@ import 'package:PomoFlutter/content/home/storage/controller/calendary_controller
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list.dart';
-import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_calendary_list_item.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_list.dart';
+import 'package:PomoFlutter/widgets/my_icon_button.dart';
+import 'package:PomoFlutter/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../widgets/calendary_list_item.dart';
-import '../widgets/task_calendary_list_item.dart';
+import 'package:PomoFlutter/content/home/widgets/calendary_list_item.dart';
 
 class CalendarPage extends StatelessWidget {
   const CalendarPage({
@@ -51,23 +52,38 @@ class CalendarPage extends StatelessWidget {
                   ),
                 ),
               ),
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    calendaryController.openDatePicker(context);
-                  },
-                  child: Obx(
-                    () => Text(
-                      DateFormat.yMMMM()
-                          .format(calendaryController.selectedDate.value),
-                      style: MyTextStyles.p.textStyle.copyWith(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        calendaryController.openDatePicker(context);
+                      },
+                      child: Obx(
+                        () => Text(
+                          DateFormat.yMMMM()
+                              .format(calendaryController.selectedDate.value),
+                          style: MyTextStyles.p.textStyle.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  const SizedBox(width: 15),
+                  MyIconButton(
+                    icon: Icons.restart_alt,
+                    onTap: () {
+                      calendaryController.resetSelectedDate();
+                    },
+                    iconColor: MyColors.CURRENT.color,
+                    backgroundColor: MyColors.CONTRARY.color,
+                  ),
+                ],
               ),
               MouseRegion(
                 cursor: SystemMouseCursors.click,

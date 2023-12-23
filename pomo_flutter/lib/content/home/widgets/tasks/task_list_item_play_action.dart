@@ -1,7 +1,7 @@
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list_item.dart';
-import 'package:PomoFlutter/content/home/widgets/task_rounded_action.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_list_item.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_rounded_action.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

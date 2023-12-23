@@ -118,6 +118,36 @@ class MyLocalizations extends Translations {
           "register_success": "Register success",
           "login_google_success": "Login with Google success",
           "password_reset_send_success": "Password reset send success",
+          "comments": "Comments",
+          "no_comments": "No comments",
+          "add_comment": "Add comment",
+          "add_comment_message": "Add a comment to this task",
+          "comment": "Comment",
+          "delete_comment": "Delete comment",
+          "delete_comment_message":
+              "Are you sure you want to delete this comment?",
+          "autherror_email-already-in-use":
+              "The email address is already in use by another account.",
+          "autherror_invalid-email": "The email address is badly formatted.",
+          "autherror_operation-not-allowed":
+              "The email/password accounts are not enabled.",
+          "autherror_weak-password":
+              "The password must be 6 characters long or more.",
+          "autherror_user-disabled":
+              "The user corresponding to the given email has been disabled.",
+          "autherror_user-not-found":
+              "There is no user corresponding to the given email.",
+          "autherror_wrong-password":
+              "The password is invalid or the user does not have a password.",
+          "autherror_too-many-requests":
+              "Too many unsuccessful login attempts. Please try again later.",
+          "autherror_invalid-login-credentials":
+              "Invalid login credentials. Please try again.",
+          "autherror_unknown": "Unknown error. Please try again.",
+          "education_name": "Education",
+          "finance_name": "Finance",
+          "health_name": "Health & Wellness",
+          "home_name": "Home",
         },
         'es_ES': {
           "app_name": "Pomo Flutter",
@@ -238,6 +268,37 @@ class MyLocalizations extends Translations {
           "login_google_success": "Inicio de sesión con Google correcto",
           "password_reset_send_success":
               "Envío de restablecimiento de contraseña correcto",
+          "comments": "Comentarios",
+          "no_comments": "No hay comentarios",
+          "add_comment": "Añadir comentario",
+          "add_comment_message": "Añade un comentario a esta tarea",
+          "comment": "Comentario",
+          "delete_comment": "Borrar comentario",
+          "delete_comment_message":
+              "¿Estás seguro de que quieres borrar este comentario?",
+          "autherror_email-already-in-use":
+              "La dirección de correo electrónico ya está siendo utilizada por otra cuenta.",
+          "autherror_invalid-email":
+              "La dirección de correo electrónico está mal formateada.",
+          "autherror_operation-not-allowed":
+              "Las cuentas de correo electrónico / contraseña no están habilitadas.",
+          "autherror_weak-password":
+              "La contraseña debe tener 6 caracteres o más.",
+          "autherror_user-disabled":
+              "El usuario correspondiente al correo electrónico dado ha sido deshabilitado.",
+          "autherror_user-not-found":
+              "No hay ningún usuario correspondiente al correo electrónico dado.",
+          "autherror_wrong-password":
+              "La contraseña no es válida o el usuario no tiene contraseña.",
+          "autherror_too-many-requests":
+              "Demasiados intentos de inicio de sesión fallidos. Vuelve a intentarlo más tarde.",
+          "autherror_invalid-login-credentials":
+              "Credenciales de inicio de sesión no válidas. Inténtalo de nuevo.",
+          "autherror_unknown": "Error desconocido. Inténtalo de nuevo.",
+          "education_name": "Educación",
+          "finance_name": "Finanzas",
+          "health_name": "Salud y bienestar",
+          "home_name": "Hogar",
         },
       };
 }

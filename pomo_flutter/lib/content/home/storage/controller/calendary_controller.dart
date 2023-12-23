@@ -69,4 +69,8 @@ class CalendaryController extends GetxController {
       selectedDayTasks[task.id] = task;
     }
   }
+
+  void resetSelectedDate() {
+    selectedDate.value = DateTime.now();
+  }
 }

@@ -1,13 +1,13 @@
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/statistics_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
-import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
+import 'package:PomoFlutter/content/home/widgets/statistics/my_bar_chart.dart';
+import 'package:PomoFlutter/content/home/widgets/statistics/my_pie_chart.dart';
+import 'package:PomoFlutter/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:PomoFlutter/widgets/generic_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:PomoFlutter/content/home/widgets/my_bar_chart.dart';
-import 'package:PomoFlutter/content/home/widgets/my_pie_chart.dart';
 
 class StatisticsPage extends StatelessWidget {
   const StatisticsPage({
@@ -19,6 +19,11 @@ class StatisticsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     StatisticsController statisticsController = Get.find();
+    double staticPie = context.width < 900
+        ? context.width < 350
+            ? 350
+            : 300
+        : 350;
     return GenericTemplate(
       onIconTap: () {
         mainController.setPage(0);
@@ -55,7 +60,7 @@ class StatisticsPage extends StatelessWidget {
                     const SizedBox(height: 20),
                     if (statisticsController.todayDailyData.value != null)
                       SizedBox(
-                        height: 250,
+                        height: staticPie,
                         child: MyPieChart(
                           dailyData: [
                             statisticsController.todayDailyData.value!,
@@ -91,7 +96,7 @@ class StatisticsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     SizedBox(
-                      height: 250,
+                      height: staticPie,
                       child: MyPieChart(
                         dailyData: statisticsController.monthDailyData,
                       ),
@@ -101,6 +106,7 @@ class StatisticsPage extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 15),
         ],
       ),
     );

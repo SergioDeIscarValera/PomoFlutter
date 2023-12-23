@@ -15,7 +15,7 @@ import 'package:intl/intl.dart';
 
 import '../../../widgets/my_dropdown_button.dart';
 import '../widgets/sliders_working_config.dart';
-import '../widgets/wrap_in_mid.dart';
+import '../../../widgets/wrap_in_mid.dart';
 
 class TaskFormPage extends StatelessWidget {
   const TaskFormPage({

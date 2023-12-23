@@ -3,6 +3,8 @@ import 'package:PomoFlutter/content/home/models/task_colors.dart';
 import 'package:PomoFlutter/content/home/models/timer_status.dart';
 import 'package:uuid/uuid.dart';
 
+import 'task_comment.dart';
+
 class Task {
   late String _id;
   final String title;
@@ -14,6 +16,7 @@ class Task {
   final int workSessionTime;
   final int longBreakTime;
   final int shortBreakTime;
+  late Map<String, TaskComment> _comments;
 
   int timeSpent;
   TimerStatus timerStatus;
@@ -34,7 +37,11 @@ class Task {
     int workSessionsCompleted = 0,
     this.timeSpent = 0,
     this.timerStatus = TimerStatus.WORKING,
+    List<TaskComment>? comments,
   }) : _workSessionsCompleted = workSessionsCompleted {
+    _comments = comments == null
+        ? {}
+        : Map.fromEntries(comments.map((e) => MapEntry(e.id, e)));
     _id = id ?? const Uuid().v4();
   }
 
@@ -56,6 +63,11 @@ class Task {
       timeSpent: json['timeSpent'],
       timerStatus: TimerStatus.values
           .firstWhere((element) => element.id == json['timerStatus']),
+      comments: json['comments'] == null || json['comments'].isEmpty
+          ? []
+          : (json['comments'] as List<dynamic>)
+              .map((e) => TaskComment.fromJson(json: e))
+              .toList(),
     );
   }
 
@@ -74,7 +86,8 @@ class Task {
       "shortBreakTime": $shortBreakTime,
       "workSessionsCompleted": $_workSessionsCompleted,
       "timeSpent": $timeSpent,
-      "timerStatus": "${timerStatus.id}"
+      "timerStatus": "${timerStatus.id}",
+      "comments": ${_comments.values.map((e) => e.toJson()).toList()}
     }
     ''';
   }
@@ -90,6 +103,7 @@ class Task {
     return sum;
   }
 
+  List<TaskComment> get comments => _comments.values.toList();
   DateTime get endDateTime => dateTime.add(Duration(minutes: duration));
 
   void addWorkSession() {
@@ -104,5 +118,16 @@ class Task {
 
   void setAsDone() {
     _workSessionsCompleted = workSessions;
+  }
+
+  void addComment(TaskComment comment) {
+    _comments[comment.id] = comment;
+    //Sort comments by date
+    _comments = Map.fromEntries(_comments.entries.toList()
+      ..sort((a, b) => b.value.dateTime.compareTo(a.value.dateTime)));
+  }
+
+  void removeComment(TaskComment comment) {
+    _comments.remove(comment.id);
   }
 }

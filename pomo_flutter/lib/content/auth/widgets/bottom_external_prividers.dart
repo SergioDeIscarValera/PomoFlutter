@@ -33,13 +33,6 @@ class BottomExternalPrividers extends StatelessWidget {
                 controller.loginWithGoogle();
               },
             ),
-            const SizedBox(width: 10),
-            ItemExternalProviderSmall(
-              image: "assets/images/github.png",
-              onPressed: () {
-                controller.loginWithGithub();
-              },
-            ),
           ],
         ),
         const SizedBox(height: 20),

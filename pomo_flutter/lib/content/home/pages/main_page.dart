@@ -77,7 +77,10 @@ class MainPage extends StatelessWidget {
               onPressed: () {
                 scaffoldKey.currentState!.openDrawer();
               },
-              child: const Icon(Icons.menu),
+              child: Icon(
+                Icons.menu,
+                color: MyColors.CURRENT.color,
+              ),
             )
           : null,
     );

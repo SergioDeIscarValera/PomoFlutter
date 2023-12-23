@@ -1,7 +1,7 @@
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
 import 'package:PomoFlutter/content/home/widgets/my_button.dart';
-import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
+import 'package:PomoFlutter/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:flutter/material.dart';

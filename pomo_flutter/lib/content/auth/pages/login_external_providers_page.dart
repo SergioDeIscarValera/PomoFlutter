@@ -53,13 +53,6 @@ class LoginExternalProviders extends StatelessWidget {
               controller.loginWithGoogle();
             },
           ),
-          ItemExternalProviderLong(
-            text: "sing_in_with_github".tr,
-            image: "assets/images/github.png",
-            onPressed: () {
-              controller.loginWithGithub();
-            },
-          ),
           const SizedBox(height: 40),
           MySpliter(text: "or".tr),
         ],

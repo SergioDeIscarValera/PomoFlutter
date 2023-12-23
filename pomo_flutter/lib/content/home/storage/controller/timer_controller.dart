@@ -135,7 +135,7 @@ class TimerController extends GetxController {
     _statisticsController.addTime(
       timerStatus.value,
       taskSelected.value!.category,
-      taskSelected.value!.dateTime,
+      DateTime.now(),
       current.value.toInt() - _lastTime,
     );
   }
@@ -158,8 +158,8 @@ class Cronometro {
   Cronometro({required this.onTick});
 
   void iniciar() {
-    //_timer = Timer.periodic(const Duration(seconds: 1), (_) {
-    _timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      //_timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
       if (!_pausado) {
         onTick();
       }

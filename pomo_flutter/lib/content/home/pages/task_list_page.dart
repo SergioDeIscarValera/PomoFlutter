@@ -3,15 +3,15 @@ import 'package:PomoFlutter/content/home/storage/controller/home_controller.dart
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/timer_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
-import 'package:PomoFlutter/content/home/widgets/wrap_in_mid.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_list_item_play_action.dart';
+import 'package:PomoFlutter/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:PomoFlutter/widgets/my_dropdown_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:PomoFlutter/content/home/widgets/my_button.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list.dart';
-import 'package:PomoFlutter/content/home/widgets/task_list_item_play_action.dart';
+import 'package:PomoFlutter/content/home/widgets/tasks/task_list.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({Key? key}) : super(key: key);
@@ -82,7 +82,7 @@ class TaskListBody extends StatelessWidget {
                   child: MyButton(
                     onTap: () {
                       Get.back();
-                      mainController.setPage(1);
+                      mainController.setPage(2);
                     },
                     text: "add_new_task".tr,
                     icon: showText ? null : Icons.add,

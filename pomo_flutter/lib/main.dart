@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
+import 'package:PomoFlutter/content/home/utils/storage_keys.dart';
 import 'package:PomoFlutter/firebase_options.dart';
 import 'package:PomoFlutter/routes/app_pages.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
@@ -18,7 +19,6 @@ void main() async {
   }
 
   await Firebase.initializeApp(
-    //name: "pomo-flutter",
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
@@ -29,13 +29,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final box = GetStorage();
+    var userThemeConfig = box.read(StorageKeys().themeMode);
     return GetMaterialApp(
       title: 'Pomo Flutter',
       debugShowCheckedModeBanner: false,
       theme: Themes.LIGHT.data,
       darkTheme: Themes.DARK.data,
-      themeMode: ThemeMode.light,
-      //themeMode: ThemeMode.system,
+      themeMode: userThemeConfig == null
+          ? ThemeMode.system
+          : userThemeConfig
+              ? ThemeMode.dark
+              : ThemeMode.light,
 
       initialBinding: BindingsBuilder(() {
         Get.put<AuthController>(

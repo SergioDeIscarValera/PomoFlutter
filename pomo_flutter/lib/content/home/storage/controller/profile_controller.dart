@@ -11,6 +11,8 @@ class ProfileController extends GetxController {
   final RxInt timeBreakSession = 5.obs;
   final RxInt timeLongBreakSession = 15.obs;
 
+  final box = GetStorage();
+
   @override
   void onInit() {
     resetWorkingConfig();
@@ -42,7 +44,6 @@ class ProfileController extends GetxController {
   }
 
   void _loadFromStorage() {
-    final box = GetStorage();
     countWorkingSession.value =
         box.read(StorageKeys().countWorkingSession) ?? 1;
     timeWorkingSession.value = box.read(StorageKeys().timeWorkingSession) ?? 25;
@@ -52,7 +53,6 @@ class ProfileController extends GetxController {
   }
 
   void _saveConfig() {
-    final box = GetStorage();
     box.write(StorageKeys().countWorkingSession, countWorkingSession.value);
     box.write(StorageKeys().timeWorkingSession, timeWorkingSession.value);
     box.write(StorageKeys().timeBreakSession, timeBreakSession.value);
@@ -64,6 +64,9 @@ class ProfileController extends GetxController {
     Get.changeThemeMode(
       Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
     );
+    if (!GetPlatform.isWeb) {
+      await box.write(StorageKeys().themeMode, !Get.isDarkMode);
+    }
     await Future.delayed(const Duration(milliseconds: 150));
     Get.updateLocale(
       Get.locale == const Locale("en", "US")
