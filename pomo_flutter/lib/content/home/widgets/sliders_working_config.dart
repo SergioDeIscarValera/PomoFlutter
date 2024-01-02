@@ -38,11 +38,12 @@ class SlidersWorkingConfig extends StatelessWidget {
           child: Obx(
             () => MySplider(
               label: "task_form_input_count_working_session".tr,
-              value: countWorkingSession.value,
+              value: countWorkingSession.value.toInt(),
               onChanged: onChangedCountWorkingSession,
               min: 1,
               max: 20,
               divisions: 19,
+              unit: "pomodoro_session_unit".tr,
             ),
           ),
         ),
@@ -54,11 +55,12 @@ class SlidersWorkingConfig extends StatelessWidget {
           child: Obx(
             () => MySplider(
               label: "task_form_input_time_working_session".tr,
-              value: timeWorkingSession.value,
+              value: timeWorkingSession.value.toInt(),
               onChanged: onChangedTimeWorkingSession,
               min: 1,
               max: 120,
               divisions: 119,
+              unit: "minute_unit".tr,
             ),
           ),
         ),
@@ -70,11 +72,12 @@ class SlidersWorkingConfig extends StatelessWidget {
           child: Obx(
             () => MySplider(
               label: "task_form_input_time_break_session".tr,
-              value: timeBreakSession.value,
+              value: timeBreakSession.value.toInt(),
               onChanged: onChangedTimeBreakSession,
               min: 1,
               max: 60,
               divisions: 59,
+              unit: "minute_unit".tr,
             ),
           ),
         ),
@@ -86,11 +89,12 @@ class SlidersWorkingConfig extends StatelessWidget {
           child: Obx(
             () => MySplider(
               label: "task_form_input_time_long_break_session".tr,
-              value: timeLongBreakSession.value,
+              value: timeLongBreakSession.value.toInt(),
               onChanged: onChangedTimeLongBreakSession,
               min: 1,
               max: 60,
               divisions: 59,
+              unit: "minute_unit".tr,
             ),
           ),
         ),

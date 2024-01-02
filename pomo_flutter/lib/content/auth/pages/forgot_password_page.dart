@@ -1,4 +1,5 @@
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
+import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:PomoFlutter/utils/form_validator.dart';
 import 'package:PomoFlutter/content/auth/widgets/auth_generic_page.dart';
 import 'package:PomoFlutter/themes/colors.dart';
@@ -50,6 +51,20 @@ class ForgotPasswordBody extends StatelessWidget {
         key: formKey,
         child: Column(
           children: [
+            Icon(
+              Icons.lock_open,
+              size: 100,
+              color: MyColors.SECONDARY.color,
+            ),
+            const SizedBox(height: 25),
+            Text(
+              "forgot_password_body".tr,
+              style: MyTextStyles.p.textStyle.copyWith(
+                color: MyColors.SECONDARY.color,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 25),
             // Email
             MyTextFormFild(
               label: "email".tr,

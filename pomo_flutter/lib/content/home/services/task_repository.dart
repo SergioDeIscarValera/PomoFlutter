@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
+import 'package:PomoFlutter/content/home/services/calendar_events_device.dart';
 import 'package:PomoFlutter/content/home/services/interface_task_repository.dart';
 import 'package:PomoFlutter/content/home/services/tasks_repository_firebase.dart';
+import 'package:get/get.dart';
 
 class TaskRepository implements ITaskRepository {
   static final TaskRepository _singleton = TaskRepository._internal();
@@ -15,6 +17,7 @@ class TaskRepository implements ITaskRepository {
   TaskRepository._internal();
 
   final ITaskJsonRepository _taskJsonRepository = TaskRepositoryFirebase();
+  final CalendarEventsDevice _calendarEventsDevice = CalendarEventsDevice();
 
   @override
   Future<int> count({required String idc}) {
@@ -23,16 +26,19 @@ class TaskRepository implements ITaskRepository {
 
   @override
   Future<void> delete({required Task entity, required String idc}) {
+    _deleteTaskFromDeviceCalendar(entity.calendarId);
     return _taskJsonRepository.delete(entity: entity.toJson(), idc: idc);
   }
 
   @override
   Future<void> deleteAll({required String idc}) {
+    _deleteAllTasksFromDeviceCalendar(idc);
     return _taskJsonRepository.deleteAll(idc: idc);
   }
 
   @override
   Future<void> deleteById({required String id, required String idc}) {
+    _deleteTaskFromDeviceCalendar(id);
     return _taskJsonRepository.deleteById(id: id, idc: idc);
   }
 
@@ -121,5 +127,30 @@ class TaskRepository implements ITaskRepository {
               jsonList.map((e) => Task.fromJson(json: jsonDecode(e)));
           listener(taskList.toList());
         });
+  }
+
+  @override
+  Future<Task?> saveWithDeviceCalendar(
+      {required Task entity, required String idc}) async {
+    var result =
+        await _calendarEventsDevice.addTaskDeviceCalendar(task: entity);
+    if (result == null) {
+      return null;
+    }
+    return await save(entity: result, idc: idc);
+  }
+
+  Future<void> _deleteTaskFromDeviceCalendar(String id) async {
+    if (GetPlatform.isWeb) return;
+    if (await _calendarEventsDevice.isTaskByIdInDeviceCalendar(id: id)) {
+      await _calendarEventsDevice.removeTaskByIdDeviceCalendar(id: id);
+    }
+  }
+
+  Future<void> _deleteAllTasksFromDeviceCalendar(String idc) async {
+    var tasks = await findAll(idc: idc);
+    for (var task in tasks) {
+      await _deleteTaskFromDeviceCalendar(task.calendarId);
+    }
   }
 }

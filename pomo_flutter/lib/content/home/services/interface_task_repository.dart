@@ -8,6 +8,8 @@ abstract class ITaskRepository
       {required DateTime dateTime, required String idc});
   Future<List<Task>> findAllByCategory(
       {required TaskCategory category, required String idc});
+  Future<Task?> saveWithDeviceCalendar(
+      {required Task entity, required String idc});
 }
 
 abstract class ITaskJsonRepository

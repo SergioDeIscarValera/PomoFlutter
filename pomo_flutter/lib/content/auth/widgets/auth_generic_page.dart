@@ -1,3 +1,5 @@
+import 'package:PomoFlutter/content/home/widgets/my_button.dart';
+import 'package:PomoFlutter/routes/app_routes.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ class AuthGenericPage extends StatelessWidget {
     required this.buttonText,
     required this.onButtonPressed,
     required this.isButtonEnable,
+    this.buttonColor = MyColors.PRIMARY,
     this.bottom,
   }) : super(key: key);
   final Function()? onBack;
@@ -21,6 +24,7 @@ class AuthGenericPage extends StatelessWidget {
   final Function() onButtonPressed;
   final RxBool isButtonEnable;
   final Widget? bottom;
+  final MyColors buttonColor;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -54,8 +58,8 @@ class AuthGenericPage extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: isButtonEnable.value
-                          ? MyColors.PRIMARY.color
-                          : MyColors.PRIMARY_EMPHSIS.color,
+                          ? buttonColor.color
+                          : buttonColor.inverse,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
@@ -90,6 +94,15 @@ class AuthGenericPage extends StatelessWidget {
             const SizedBox(height: 20),
             // Bottom
             if (bottom != null) bottom!,
+            const SizedBox(height: 20),
+            MyButton(
+              onTap: () {
+                Get.toNamed(Routes.PRIVACY_POLICY.path);
+              },
+              color: MyColors.INFO_EMPHSIS.color,
+              textColor: MyColors.INFO.color,
+              text: "privacy_policy".tr,
+            )
           ],
         ),
 

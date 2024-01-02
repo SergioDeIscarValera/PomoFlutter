@@ -10,21 +10,23 @@ class MySplider extends StatelessWidget {
     required this.min,
     required this.max,
     required this.divisions,
+    required this.unit,
   }) : super(key: key);
 
   final String label;
   final int value;
   final Function(double) onChanged;
-  final double min;
-  final double max;
+  final int min;
+  final int max;
   final int divisions;
+  final String unit;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
-          "$label: $value",
+          "$label: $value $unit",
           style: MyTextStyles.p.textStyle,
           textAlign: TextAlign.center,
         ),
@@ -33,22 +35,27 @@ class MySplider extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              min.toString(),
+              "$min $unit",
               style: MyTextStyles.p.textStyle,
             ),
+            Text(
+              "$max $unit",
+              style: MyTextStyles.p.textStyle,
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
             Expanded(
               child: Slider(
                 value: value.toDouble(),
                 onChanged: onChanged,
-                min: min,
-                max: max,
+                min: min.toDouble(),
+                max: max.toDouble(),
                 divisions: divisions,
-                label: value.toString(),
+                label: "$value $unit",
               ),
-            ),
-            Text(
-              max.toString(),
-              style: MyTextStyles.p.textStyle,
             ),
           ],
         ),

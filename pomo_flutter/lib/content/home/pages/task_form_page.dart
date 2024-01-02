@@ -107,57 +107,107 @@ class TaskFormPage extends StatelessWidget {
                   ),
                   const SizedBox(height: spaceBetween),
                   //Date and time input
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Column(
-                          children: [
-                            Text(
-                              "task_form_input_date".tr,
-                              style: MyTextStyles.p.textStyle,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 10),
-                            Obx(
-                              () => _GenericContainerSplited(
-                                text: DateFormat.yMd().format(
-                                    taskFormController.selectedDate.value),
-                                icon: Icons.calendar_month,
-                                onTap: () {
-                                  taskFormController.selectDate(context);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
+                  _inputsDateTime(
+                    selectedDateTime: MapEntry(
+                      taskFormController.selectedTime,
+                      taskFormController.selectedDate,
+                    ),
+                    onTap: MapEntry(
+                      () => taskFormController.selectDate(
+                        context: context,
+                        date: taskFormController.selectedDate,
                       ),
-                      SizedBox(width: context.width < 500 ? 10 : 20),
-                      Flexible(
-                        child: Column(
-                          children: [
-                            Text(
-                              "task_form_input_time".tr,
-                              style: MyTextStyles.p.textStyle,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 10),
-                            Obx(
-                              () => _GenericContainerSplited(
-                                text: DateFormat.jm().format(
-                                    taskFormController.selectedTime.value),
-                                icon: Icons.access_time,
-                                onTap: () {
-                                  taskFormController.selectTime(context);
-                                },
-                              ),
-                            )
-                          ],
+                      () => taskFormController.selectTime(
+                        context: context,
+                        dayBase: taskFormController.selectedDate.value,
+                        time: taskFormController.selectedTime,
+                      ),
+                    ),
+                    labels: MapEntry(
+                      "task_form_input_date".tr,
+                      "task_form_input_time".tr,
+                    ),
+                    context: context,
+                  ),
+                  const SizedBox(height: spaceBetween),
+                  //End date and time input
+                  ExpansionTile(
+                    initiallyExpanded: taskFormController.isManualEndDate.value,
+                    childrenPadding: const EdgeInsets.symmetric(vertical: 20),
+                    collapsedIconColor: MyColors.CONTRARY.color,
+                    title: Wrap(
+                      alignment: WrapAlignment.spaceAround,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          "task_form_input_end_date_title".tr,
+                          style: MyTextStyles.p.textStyle,
                         ),
-                      )
+                        Obx(
+                          () => Checkbox(
+                            value: taskFormController.isManualEndDate.value,
+                            onChanged: (value) {
+                              taskFormController.isManualEndDate.value = value!;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    children: [
+                      _inputsDateTime(
+                        selectedDateTime: MapEntry(
+                          taskFormController.selectedTimeEnd,
+                          taskFormController.selectedDateEnd,
+                        ),
+                        onTap: MapEntry(
+                          () => taskFormController.selectDate(
+                            context: context,
+                            date: taskFormController.selectedDateEnd,
+                            firstDate: taskFormController.selectedDate.value,
+                          ),
+                          () => taskFormController.selectTime(
+                            context: context,
+                            time: taskFormController.selectedTimeEnd,
+                            dayBase: taskFormController.selectedDateEnd.value,
+                            limitTime: taskFormController.selectedDateTime,
+                          ),
+                        ),
+                        labels: MapEntry(
+                          "task_form_input_date_end".tr,
+                          "task_form_input_time_end".tr,
+                        ),
+                        context: context,
+                      ),
                     ],
                   ),
                   const SizedBox(height: spaceBetween),
+                  //Save in device calendar
+                  if (!GetPlatform.isWeb)
+                    WrapInMid(
+                      flex: 4,
+                      otherFlex: context.width < 500 ? 0 : 1,
+                      child: Column(
+                        children: [
+                          Text(
+                            "task_form_input_save_in_device_calendar".tr,
+                            style: MyTextStyles.p.textStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 10),
+                          Obx(
+                            () => Checkbox(
+                              value:
+                                  taskFormController.saveInDeviceCalendar.value,
+                              onChanged: (value) {
+                                taskFormController.saveInDeviceCalendar.value =
+                                    value!;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  SizedBox(height: !GetPlatform.isWeb ? spaceBetween : 0),
                   //Category input
                   WrapInMid(
                     flex: 4,
@@ -305,21 +355,71 @@ class TaskFormPage extends StatelessWidget {
       ),
     );
   }
-}
 
-class _GenericContainerSplited extends StatelessWidget {
-  const _GenericContainerSplited({
-    required this.text,
-    required this.icon,
-    required this.onTap,
-  });
+  /// Este widget contiene los inputs de fecha y hora
+  /// [selectedDateTime] es un map que contiene dos Rx<DateTime> que son la fecha y la hora seleccionada
+  /// [onTap] es un map que contiene dos funciones que se ejecutan cuando se hace tap en la fecha o en la hora
+  Widget _inputsDateTime({
+    required MapEntry<Rx<DateTime>, Rx<DateTime>> selectedDateTime,
+    required MapEntry<Function(), Function()> onTap,
+    required MapEntry<String, String> labels,
+    required BuildContext context,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Column(
+            children: [
+              Text(
+                labels.key,
+                style: MyTextStyles.p.textStyle,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Obx(
+                () => _genericContainerSplited(
+                  text: DateFormat.yMd().format(selectedDateTime.value.value),
+                  icon: Icons.calendar_month,
+                  onTap: () {
+                    onTap.key();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: context.width < 500 ? 10 : 20),
+        Flexible(
+          child: Column(
+            children: [
+              Text(
+                labels.value,
+                style: MyTextStyles.p.textStyle,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Obx(
+                () => _genericContainerSplited(
+                  text: DateFormat.jm().format(selectedDateTime.key.value),
+                  icon: Icons.access_time,
+                  onTap: () {
+                    onTap.value();
+                  },
+                ),
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
 
-  final String text;
-  final IconData icon;
-  final Function() onTap;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _genericContainerSplited({
+    required String text,
+    required IconData icon,
+    required Function() onTap,
+  }) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(

@@ -3,6 +3,7 @@ import 'package:PomoFlutter/content/auth/pages/forgot_password_page.dart';
 import 'package:PomoFlutter/content/auth/pages/login_email_page.dart';
 import 'package:PomoFlutter/content/auth/pages/login_external_providers_page.dart';
 import 'package:PomoFlutter/content/auth/pages/register_page.dart';
+import 'package:PomoFlutter/content/auth/storage/binding/auth_binding.dart';
 import 'package:PomoFlutter/content/auth/storage/binding/email_verification_binding.dart';
 import 'package:PomoFlutter/content/first_time/pages/first_time_page.dart';
 import 'package:PomoFlutter/content/first_time/storage/binding/first_time_binding.dart';
@@ -17,6 +18,8 @@ import 'package:PomoFlutter/content/home/storage/binding/profile_binding.dart';
 import 'package:PomoFlutter/content/home/storage/binding/statistics_binding.dart';
 import 'package:PomoFlutter/content/home/storage/binding/task_form_binding.dart';
 import 'package:PomoFlutter/content/home/storage/binding/timer_binding.dart';
+import 'package:PomoFlutter/content/policy/pages/delete_acount_page.dart';
+import 'package:PomoFlutter/content/policy/pages/privacy_policy_page.dart';
 import 'package:PomoFlutter/content/splash/pages/splash_page.dart';
 import 'package:PomoFlutter/content/splash/storage/binding/splash_binding.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
@@ -79,6 +82,15 @@ class AppPages {
     GetPage(
       name: Routes.CONGRATULATIONS.path,
       page: () => const CongratulationsPage(),
+    ),
+    GetPage(
+      name: Routes.PRIVACY_POLICY.path,
+      page: () => const PrivacyPolicyPage(),
+    ),
+    GetPage(
+      name: Routes.DELETE_ACCOUNT.path,
+      page: () => const DeleteAcountPage(),
+      binding: AuthBinding(),
     ),
   ];
 }

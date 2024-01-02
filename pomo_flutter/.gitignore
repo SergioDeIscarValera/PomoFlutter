@@ -1,3 +1,7 @@
+*key.properties
+*.aab
+*.jks
+
 /lib/utils/api_key.dart
 *firebase-config.js
 

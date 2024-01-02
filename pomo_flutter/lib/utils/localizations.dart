@@ -75,6 +75,8 @@ class MyLocalizations extends Translations {
           "task_form_input_time_working_session": "Working time",
           "task_form_input_time_break_session": "Break time",
           "task_form_input_time_long_break_session": "Long break time",
+          "task_form_input_save_in_device_calendar":
+              "Save in the device calendar",
           "red_name": "Red",
           "orange_name": "Orange",
           "yellow_name": "Yellow",
@@ -148,6 +150,49 @@ class MyLocalizations extends Translations {
           "finance_name": "Finance",
           "health_name": "Health & Wellness",
           "home_name": "Home",
+          "privacy_policy": "Privacy policy",
+          "privacy_policy_info_title": "Website/app information",
+          "privacy_policy_info_body":
+              "This website is owned by Sergio de Iscar Valera.\nemail: seroigres888@gmail.com",
+          "privacy_policy_data_title": "Type of data collected",
+          "privacy_policy_data_body":
+              "The data collected is the minimum necessary for the operation of the application.\n\nThe data collected is:\n- Username\n- Email\n- Password\n- Tasks\n- Comments\n- User configuration\n- Task configuration\n- Statistics\n\nThe collected data is not shared with third parties.\nThe collected data is stored in the Google database securely encrypted.",
+          "privacy_policy_purpose_title": "Purpose of the collection",
+          "privacy_policy_purpose_body":
+              "The collected data is used for the operation of the application.\n\nThe collected data is used for:\n- User authentication\n- Task creation\n- Comment creation\n- Statistics creation\n- Configuration creation\n- Task configuration creation\n- Sending promotional emails from the application itself (never third-party advertising)\n\nThe collected data will never be shared with third parties or used for other purposes.",
+          "privacy_policy_third_title": "Third parties",
+          "privacy_policy_third_body":
+              "The collected data is not shared with third parties.\nThe collected data is stored in the Google database securely encrypted.\nThe only third-party services involved are Google authentication.\n\nThe data collected by these services is:\n- Username\n- Email\n- Password\n\nThe data collected by these services is used for:\n- User authentication\n\nThe collected data will never be shared with third parties or used for other purposes.",
+          "privacy_policy_security_title": "Security",
+          "privacy_policy_security_body":
+              "The collected data is stored in the Google database securely encrypted.",
+          "privacy_policy_rights_title": "Rights",
+          "privacy_policy_rights_body":
+              "Application users have the right to:\n- Access their personal data\n- Rectify their personal data\n- Delete their personal data\n- Limit the processing of their personal data\n- Object to the processing of their personal data\n- Carry their personal data\n\nTo exercise these rights, users can contact the owner of the website/app via email.",
+          "privacy_policy_updates_title": "Updates",
+          "privacy_policy_updates_body":
+              "We reserve the right to make the modifications that we consider appropriate to the website without prior notice, being able to change, delete or add both the contents and services provided through it and the way in which they are presented.\nOn the other hand, we may update these terms and conditions. The modifications will come into effect from the moment of their publication.",
+          "forgot_password_body":
+              "Don't worry, we'll help you recover it.\nJust enter your email and we'll send you a link so you can reset your password.",
+          "delete_account": "Delete account",
+          "delete_account_body":
+              "Are you sure you want to delete your account?",
+          "error_deleting_account":
+              "Error deleting account, to delete the account you must be logged in previously.",
+          "delete_account_success": "Account deleted successfully",
+          "minute_unit": "min",
+          "pomodoro_session_unit": "session/s",
+          "task_form_success_add_calendar_event":
+              "Event added to the device calendar correctly",
+          "task_form_error_calendar_event":
+              "Error of the event to the device calendar",
+          "task_form_success_remove_calendar_event":
+              "Event removed from the device calendar correctly",
+          "task_form_error_time":
+              "The task time cannot be earlier than the current time",
+          "task_form_input_end_date_title": "Task end date (optional)",
+          "task_form_input_date_end": "Task end date",
+          "task_form_input_time_end": "Task end time",
         },
         'es_ES': {
           "app_name": "Pomo Flutter",
@@ -223,6 +268,8 @@ class MyLocalizations extends Translations {
           "task_form_input_time_working_session": "Tiempo de trabajo",
           "task_form_input_time_break_session": "Tiempo de descanso",
           "task_form_input_time_long_break_session": "Tiempo de descanso largo",
+          "task_form_input_save_in_device_calendar":
+              "Guardar en el calendario del dispositivo",
           "red_name": "Rojo",
           "orange_name": "Naranja",
           "yellow_name": "Amarillo",
@@ -299,6 +346,50 @@ class MyLocalizations extends Translations {
           "finance_name": "Finanzas",
           "health_name": "Salud y bienestar",
           "home_name": "Hogar",
+          "privacy_policy": "Política de privacidad",
+          "privacy_policy_info_title": "Información del sitio web/app",
+          "privacy_policy_info_body":
+              "Este sitio web es propiedad de Sergio de Iscar Valera.\ncorreo: seroigres888@gmail.com",
+          "privacy_policy_data_title": "Tipo de datos recopilados",
+          "privacy_policy_data_body":
+              "Los datos recopilados son los mínimos necesarios para el funcionamiento de la aplicación.\n\nLos datos recopilados son:\n- Nombre de usuario\n- Email\n- Contraseña\n- Tareas\n- Comentarios\n- Configuración de usuario\n- Configuración de tareas\n- Estadísticas\n\nLos datos recopilados no se comparten con terceros.\nLos datos recopilados se almacenan en la base de datos de Google encrptados de forma segura.",
+          "privacy_policy_purpose_title": "Finalidad de la recopilación",
+          "privacy_policy_purpose_body":
+              "Los datos recopilados se utilizan para el funcionamiento de la aplicación.\n\nLos datos recopilados se utilizan para:\n- Autenticación de usuario\n- Creación de tareas\n- Creación de comentarios\n- Creación de estadísticas\n- Creación de configuraciones\n- Creación de configuraciones de tareas\n- Envio correos promocionales de la pripia aplicación (nunca publicidad de terceros)\n\nNunca se compartirán los datos recopilados con terceros ni se utilizarán para otros fines.",
+          "privacy_policy_third_title": "Terceros",
+          "privacy_policy_third_body":
+              "Los datos recopilados no se comparten con terceros.\nLos datos recopilados se almacenan en la base de datos de Google encrptados de forma segura.\nLos unicos servicios de terceros involucrados son los de autenticación de Google.\n\nLos datos recopilados por estos servicios son:\n- Nombre de usuario\n- Email\n- Contraseña\n\nLos datos recopilados por estos servicios se utilizan para:\n- Autenticación de usuario\n\nNunca se compartirán los datos recopilados con terceros ni se utilizarán para otros fines.",
+          "privacy_policy_security_title": "Seguridad",
+          "privacy_policy_security_body":
+              "Los datos recopilados se almacenan en la base de datos de Google encrptados de forma segura.",
+          "privacy_policy_rights_title": "Derechos",
+          "privacy_policy_rights_body":
+              "Los usuarios de la aplicación tienen derecho a:\n- Acceder a sus datos personales\n- Rectificar sus datos personales\n- Eliminar sus datos personales\n- Limitar el procesamiento de sus datos personales\n- Oponerse al procesamiento de sus datos personales\n- Portar sus datos personales\n\nPara ejercer estos derechos, los usuarios pueden ponerse en contacto con el propietario del sitio web/app a través del correo electrónico.",
+          "privacy_policy_updates_title": "Actualizaciones",
+          "privacy_policy_updates_body":
+              "Nos reservamos el derecho de efectuar sin previo aviso las modificaciones que consideremos oportunas en la web, pudiendo cambiar, suprimir o añadir tanto los contenidos y servicios que se presten a través de la misma como la forma en la que éstos aparezcan presentados.\nPor otro lado, podremos actualizar estos términos y condiciones. Las modificaciones entrarán en vigor desde el momento de su publicación.",
+          "forgot_password_body":
+              "No te preocupes, te ayudaremos a recuperarla.\nSolo tienes que introducir tu correo electrónico y te enviaremos un enlace para que puedas restablecer tu contraseña.",
+          "delete_account": "Borrar cuenta",
+          "delete_account_body":
+              "¿Estás seguro de que quieres borrar tu cuenta?",
+          "error_deleting_account":
+              "Error al borrar la cuenta, para borrar la cuenta debes estar logueado previamente.",
+          "delete_account_success": "Cuenta borrada correctamente",
+          "minute_unit": "min",
+          "pomodoro_session_unit": "sesión/es",
+          "task_form_success_add_calendar_event":
+              "Evento añadido al calendario del dispositivo correctamente",
+          "task_form_error_calendar_event":
+              "Error del evento al calendario del dispositivo",
+          "task_form_success_remove_calendar_event":
+              "Evento eliminado del calendario del dispositivo correctamente",
+          "task_form_error_time":
+              "La hora de la tarea no puede ser anterior a la hora actual",
+          "task_form_input_end_date_title":
+              "Fecha de finalización de la tarea (opcional)",
+          "task_form_input_date_end": "Fecha de finalización de la tarea",
+          "task_form_input_time_end": "Hora de finalización de la tarea",
         },
       };
 }

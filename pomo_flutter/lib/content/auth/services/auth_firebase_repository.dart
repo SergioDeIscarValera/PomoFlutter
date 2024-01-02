@@ -98,4 +98,36 @@ class AuthFirebaseRepository {
       throw ex.message;
     }
   }
+
+  Future<void> removeUser() async {
+    try {
+      await FirebaseAuth.instance.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "requires-recent-login") {
+        await _reauthenticateAndDelete();
+      } else {
+        throw AuthErrors.fromCode(e.code).message;
+      }
+    } catch (e) {
+      const ex = AuthErrors();
+      throw ex.message;
+    }
+  }
+
+  Future<void> _reauthenticateAndDelete() async {
+    try {
+      final firebaseAuth = FirebaseAuth.instance;
+      final providerData = firebaseAuth.currentUser?.providerData.first;
+
+      if (GoogleAuthProvider().providerId == providerData!.providerId) {
+        await firebaseAuth.currentUser!
+            .reauthenticateWithProvider(GoogleAuthProvider());
+      }
+
+      await firebaseAuth.currentUser?.delete();
+    } catch (e) {
+      const ex = AuthErrors();
+      throw ex.message;
+    }
+  }
 }

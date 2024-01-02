@@ -99,7 +99,9 @@ class RegisterBody extends StatelessWidget {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed(Routes.PRIVACY_POLICY.path);
+                    },
                     child: Text(
                       "accept_terms_and_conditions".tr,
                       style: MyTextStyles.p.textStyle.copyWith(

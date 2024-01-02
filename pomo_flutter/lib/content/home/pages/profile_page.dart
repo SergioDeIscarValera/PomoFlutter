@@ -4,6 +4,7 @@ import 'package:PomoFlutter/content/home/storage/controller/profile_controller.d
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
 import 'package:PomoFlutter/content/home/widgets/my_button.dart';
 import 'package:PomoFlutter/content/home/widgets/sliders_working_config.dart';
+import 'package:PomoFlutter/routes/app_routes.dart';
 import 'package:PomoFlutter/widgets/wrap_in_mid.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
@@ -125,7 +126,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                     const SizedBox(width: 15),
                     MyIconButton(
-                      icon: Icons.language,
+                      icon: Icons.translate,
                       onTap: () {
                         profileController.changeLanguage(mainController);
                       },
@@ -159,6 +160,18 @@ class ProfilePage extends StatelessWidget {
                         textColor: MyColors.LIGHT.color,
                         text: "logout".tr,
                         icon: context.width > 600 ? null : Icons.logout,
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: MyButton(
+                        onTap: () {
+                          Get.toNamed(Routes.DELETE_ACCOUNT.path);
+                        },
+                        color: MyColors.DANGER.color,
+                        textColor: MyColors.LIGHT.color,
+                        text: "delete_account".tr,
+                        icon: context.width > 600 ? null : Icons.person_off,
                       ),
                     ),
                   ],

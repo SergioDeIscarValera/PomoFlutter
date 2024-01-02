@@ -33,10 +33,20 @@ class AuthController extends GetxController {
       Get.offAllNamed(Routes.SPLASH.path);
       return;
     }
+    var pageIsPolicy = Get.currentRoute == Routes.PRIVACY_POLICY.path
+        ? 1
+        : Get.currentRoute == Routes.DELETE_ACCOUNT.path
+            ? 2
+            : 0;
     if (newUser.emailVerified) {
       Get.offAllNamed(Routes.MAIN.path);
     } else {
       Get.offAllNamed(Routes.EMAIL_VERIFICATION.path);
+    }
+    if (pageIsPolicy != 0) {
+      Get.offAllNamed(pageIsPolicy == 1
+          ? Routes.PRIVACY_POLICY.path
+          : Routes.DELETE_ACCOUNT.path);
     }
   }
 
@@ -95,6 +105,18 @@ class AuthController extends GetxController {
       await AuthFirebaseRepository()
           .passwordReset(email: emailController.value.text);
       MySnackBar.snackSuccess("password_reset_send_success".tr);
+    } on AuthErrors catch (e) {
+      MySnackBar.snackError(e.message);
+    } catch (e) {
+      MySnackBar.snackError(e.toString());
+    }
+  }
+
+  void removeUser() async {
+    try {
+      await AuthFirebaseRepository().removeUser();
+      MySnackBar.snackSuccess("delete_account_success".tr);
+      Get.offAllNamed(Routes.SPLASH.path);
     } on AuthErrors catch (e) {
       MySnackBar.snackError(e.message);
     } catch (e) {

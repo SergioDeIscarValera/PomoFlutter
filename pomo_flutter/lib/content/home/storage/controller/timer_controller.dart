@@ -19,7 +19,9 @@ class TimerController extends GetxController {
   final Rx<TimerStatus> timerStatus = TimerStatus.WORKING.obs;
   final RxBool isPlaying = false.obs;
 
-  final AudioPlayer _audioCache = AudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioCache _audioCache = AudioCache(prefix: "assets/sounds/");
+  late final Uri urlKitchenTimer;
   int _lastTime = 0;
 
   final TaskRepository _taskRepository = TaskRepository();
@@ -36,7 +38,6 @@ class TimerController extends GetxController {
         if (taskSelected.value?.isFinished ?? false) {
           saveTask(0);
           _saveStatistics();
-          _stopAlarmSound();
           Get.back();
           return;
         }
@@ -88,6 +89,8 @@ class TimerController extends GetxController {
       currentFormatted.value = "${(value ~/ 60).toString().padLeft(2, '0')}:"
           "${(value % 60).toInt().toString().padLeft(2, '0')}";
     });
+
+    _loadSounds();
     super.onInit();
   }
 
@@ -140,13 +143,13 @@ class TimerController extends GetxController {
     );
   }
 
-  void _playAlarmSound() async {
-    await _audioCache
-        .play(DeviceFileSource("assets/sounds/Kitchen-Timer-Alarm.mp3"));
+  void _playAlarmSound() {
+    _audioPlayer.setReleaseMode(ReleaseMode.stop);
+    _audioPlayer.play(UrlSource(urlKitchenTimer.path), volume: 1.0);
   }
 
-  void _stopAlarmSound() async {
-    await _audioCache.stop();
+  void _loadSounds() async {
+    urlKitchenTimer = await _audioCache.load("Kitchen-Timer-Alarm.mp3");
   }
 }
 

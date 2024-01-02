@@ -11,6 +11,9 @@ enum Routes {
   LIST_TASKS,
   TIMER_PAGES,
   CONGRATULATIONS,
+
+  PRIVACY_POLICY,
+  DELETE_ACCOUNT,
 }
 
 extension RoutesPath on Routes {
@@ -39,6 +42,11 @@ extension RoutesPath on Routes {
         return "/home/timer";
       case Routes.CONGRATULATIONS:
         return "/home/congratulations";
+
+      case Routes.PRIVACY_POLICY:
+        return "/privacy-policy";
+      case Routes.DELETE_ACCOUNT:
+        return "/delete-account";
     }
   }
 }

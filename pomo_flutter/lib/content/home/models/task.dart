@@ -10,6 +10,7 @@ class Task {
   final String title;
   final String description;
   final DateTime dateTime;
+  late DateTime endDateTime;
   final TaskCategory category;
   final TaskColor color;
   final int workSessions;
@@ -17,6 +18,8 @@ class Task {
   final int longBreakTime;
   final int shortBreakTime;
   late Map<String, TaskComment> _comments;
+
+  String calendarId;
 
   int timeSpent;
   TimerStatus timerStatus;
@@ -38,10 +41,17 @@ class Task {
     this.timeSpent = 0,
     this.timerStatus = TimerStatus.WORKING,
     List<TaskComment>? comments,
+    this.calendarId = '',
+    DateTime? endDateTime,
   }) : _workSessionsCompleted = workSessionsCompleted {
+    this.endDateTime = endDateTime ?? dateTime.add(Duration(minutes: duration));
     _comments = comments == null
         ? {}
-        : Map.fromEntries(comments.map((e) => MapEntry(e.id, e)));
+        : Map.fromEntries(
+            comments.map(
+              (e) => MapEntry(e.id, e),
+            ),
+          );
     _id = id ?? const Uuid().v4();
   }
 
@@ -68,6 +78,10 @@ class Task {
           : (json['comments'] as List<dynamic>)
               .map((e) => TaskComment.fromJson(json: e))
               .toList(),
+      calendarId: json['calendarId'] ?? '',
+      endDateTime: json['endDateTime'] != null
+          ? DateTime.parse(json['endDateTime'])
+          : null,
     );
   }
 
@@ -78,6 +92,7 @@ class Task {
       "title": "$title",
       "description": "$description",
       "dateTime": "${dateTime.toIso8601String()}",
+      "endDateTime": "${endDateTime.toIso8601String()}",
       "category": "${category.id}",
       "color": "${color.id}",
       "workSessions": $workSessions,
@@ -87,7 +102,8 @@ class Task {
       "workSessionsCompleted": $_workSessionsCompleted,
       "timeSpent": $timeSpent,
       "timerStatus": "${timerStatus.id}",
-      "comments": ${_comments.values.map((e) => e.toJson()).toList()}
+      "comments": ${_comments.values.map((e) => e.toJson()).toList()},
+      "calendarId": "$calendarId"
     }
     ''';
   }
@@ -104,7 +120,6 @@ class Task {
   }
 
   List<TaskComment> get comments => _comments.values.toList();
-  DateTime get endDateTime => dateTime.add(Duration(minutes: duration));
 
   void addWorkSession() {
     if (_workSessionsCompleted < workSessions) {

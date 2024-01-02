@@ -45,7 +45,7 @@ class EmailVerificationBody extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
-            "images/auth-check.png",
+            "assets/images/auth-check.png",
             height: 200,
           ),
           const SizedBox(height: 75),
