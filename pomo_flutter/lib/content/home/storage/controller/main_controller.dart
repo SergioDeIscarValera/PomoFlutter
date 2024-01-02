@@ -24,6 +24,8 @@ class MainController extends GetxController {
 
   final TextEditingController _commentController = TextEditingController();
 
+  final Rx<Task?> taskSelected = Rx<Task?>(null);
+
   @override
   void onInit() async {
     _startTimer();
@@ -194,5 +196,52 @@ class MainController extends GetxController {
     task.removeComment(comment);
     _taskRepository.save(
         entity: task, idc: authController.firebaseUser!.email!);
+  }
+
+  void addPageIndexListener(Function(int) listener) {
+    _mainPageController.addListener(() {
+      listener(_mainPageController.page!.round());
+    });
+  }
+
+  void editTask(Task task) {
+    Get.defaultDialog(
+      title: 'edit_task'.tr,
+      textConfirm: "confirm".tr,
+      textCancel: "cancel".tr,
+      titleStyle: MyTextStyles.h2.textStyle.copyWith(
+        color: MyColors.CONTRARY.color,
+      ),
+      cancelTextColor: MyColors.CONTRARY.color,
+      confirmTextColor: MyColors.CONTRARY.color,
+      backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+      buttonColor: MyColors.CURRENT.color,
+      content: Column(
+        children: [
+          Text(
+            "edit_task_message".tr,
+            style: MyTextStyles.p.textStyle,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "edit_task_submessage".tr,
+            style: MyTextStyles.p.textStyle.copyWith(
+              fontSize: 12,
+              color: MyColors.CONTRARY.color.withOpacity(0.6),
+            ),
+            textAlign: TextAlign.center,
+          )
+        ],
+      ),
+      onConfirm: () {
+        taskSelected.value = task;
+        _mainPageController.jumpToPage(2);
+        Get.back();
+      },
+      onCancel: () {
+        Get.back();
+      },
+    );
   }
 }

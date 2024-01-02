@@ -136,7 +136,15 @@ class CalendarPage extends StatelessWidget {
                 itemList: (task) => TaskCalendaryListItem(
                   key: Key(task.id),
                   task: task,
-                  now: mainController.now.value,
+                  //now: mainController.now.value,
+                  now: DateTime(
+                    calendaryController.selectedDate.value.year,
+                    calendaryController.selectedDate.value.month,
+                    calendaryController.selectedDate.value.day,
+                    mainController.now.value.hour,
+                    mainController.now.value.minute,
+                    mainController.now.value.second,
+                  ),
                   timerController: timerController,
                 ),
                 scrollable: true,

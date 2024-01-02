@@ -89,6 +89,7 @@ class TaskFormPage extends StatelessWidget {
                     validator: formValidator.isValidTaskName,
                     icon: Icons.title,
                     mainController: mainController,
+                    showAlert: true,
                   ),
                   const SizedBox(height: spaceBetween),
                   //Description input
@@ -104,6 +105,7 @@ class TaskFormPage extends StatelessWidget {
                     validator: formValidator.isValidTaskDescription,
                     icon: Icons.description,
                     mainController: mainController,
+                    showAlert: true,
                   ),
                   const SizedBox(height: spaceBetween),
                   //Date and time input
@@ -186,7 +188,9 @@ class TaskFormPage extends StatelessWidget {
                     WrapInMid(
                       flex: 4,
                       otherFlex: context.width < 500 ? 0 : 1,
-                      child: Column(
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceAround,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Text(
                             "task_form_input_save_in_device_calendar".tr,

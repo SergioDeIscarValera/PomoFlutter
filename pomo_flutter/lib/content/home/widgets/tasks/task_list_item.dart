@@ -30,6 +30,9 @@ class TaskListItem extends StatelessWidget {
         onLongPress: () {
           mainController.deleteTask(task);
         },
+        onTap: () {
+          mainController.editTask(task);
+        },
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: GenericContainer(

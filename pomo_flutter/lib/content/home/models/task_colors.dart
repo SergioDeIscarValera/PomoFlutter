@@ -37,7 +37,7 @@ extension TaskColorsExtens on TaskColor {
       case TaskColor.red:
         return MyColors.DANGER.inverse;
       case TaskColor.orange:
-        return Color.fromARGB(255, 120, 62, 16);
+        return const Color.fromARGB(255, 120, 62, 16);
       case TaskColor.yellow:
         return MyColors.WARNING.inverse;
       case TaskColor.green:
@@ -45,9 +45,9 @@ extension TaskColorsExtens on TaskColor {
       case TaskColor.blue:
         return MyColors.INFO.inverse;
       case TaskColor.purple:
-        return Color.fromARGB(255, 50, 31, 86);
+        return const Color.fromARGB(255, 50, 31, 86);
       case TaskColor.pink:
-        return Color.fromARGB(255, 123, 35, 76);
+        return const Color.fromARGB(255, 123, 35, 76);
     }
   }
 

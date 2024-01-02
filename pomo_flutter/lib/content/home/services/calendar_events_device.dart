@@ -31,6 +31,11 @@ class CalendarEventsDevice {
       end: TZDateTime.from(task.endDateTime, location),
     );
 
+    if (task.calendarId != "") {
+      await deviceCalendarPlugin.key
+          .deleteEvent(deviceCalendarPlugin.value, task.calendarId);
+    }
+
     var createEventResult =
         await deviceCalendarPlugin.key.createOrUpdateEvent(evento);
 

@@ -46,8 +46,11 @@ class TaskCalendaryListItem extends StatelessWidget {
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
-                  onTap: () {
+                  onLongPress: () {
                     mainController.deleteTask(task);
+                  },
+                  onTap: () {
+                    mainController.editTask(task);
                   },
                   child: Container(
                     decoration: BoxDecoration(

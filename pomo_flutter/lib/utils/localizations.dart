@@ -193,6 +193,10 @@ class MyLocalizations extends Translations {
           "task_form_input_end_date_title": "Task end date (optional)",
           "task_form_input_date_end": "Task end date",
           "task_form_input_time_end": "Task end time",
+          "edit_task": "Edit task",
+          "edit_task_message": "Are you sure you want to edit this task?",
+          "edit_task_submessage":
+              "(If you want to start the task click on the play)",
         },
         'es_ES': {
           "app_name": "Pomo Flutter",
@@ -390,6 +394,11 @@ class MyLocalizations extends Translations {
               "Fecha de finalización de la tarea (opcional)",
           "task_form_input_date_end": "Fecha de finalización de la tarea",
           "task_form_input_time_end": "Hora de finalización de la tarea",
+          "edit_task": "Editar tarea",
+          "edit_task_message":
+              "¿Estás seguro de que quieres editar esta tarea?",
+          "edit_task_submessage":
+              "(Si quieres empezar la tarea pulsa en el play)",
         },
       };
 }

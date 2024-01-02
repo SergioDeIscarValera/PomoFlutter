@@ -15,6 +15,7 @@ class MyTextFormFild extends StatelessWidget {
     required this.icon,
     this.mainController,
     this.obscureText = false,
+    this.showAlert = false,
   });
 
   final String label;
@@ -24,13 +25,14 @@ class MyTextFormFild extends StatelessWidget {
   final IconData icon;
   final MainController? mainController;
   final String? Function(String?) validator;
+  final bool showAlert;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         TextFormField(
-          readOnly: GetPlatform.isMobile,
+          readOnly: GetPlatform.isMobile && showAlert,
           controller: controller,
           obscureText: obscureText,
           validator: validator,
@@ -63,7 +65,7 @@ class MyTextFormFild extends StatelessWidget {
             color: color,
           ),
         ),
-        if (GetPlatform.isMobile)
+        if (GetPlatform.isMobile && showAlert)
           Positioned.fill(
             child: GestureDetector(
               onTap: () {

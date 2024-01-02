@@ -45,6 +45,9 @@ class TaskFormController extends GetxController {
 
   final RxBool saveInDeviceCalendar = false.obs;
 
+  String? _currentTaskId;
+  String? _currentTaskCalendarId;
+
   final TaskRepository _taskRepository = TaskRepository();
   final AuthController authController = Get.find();
   final MainController mainController = Get.find();
@@ -52,39 +55,35 @@ class TaskFormController extends GetxController {
   @override
   void onInit() {
     resetForm();
-    selectedDate.listen((value) {
-      if (value.isAfter(selectedDateEnd.value) || !isManualEndDate.value) {
-        selectedDateEnd.value = value;
-      }
-      // Al cambiar el dia tambien hay que comprobar la hora
-      if (value.day == selectedDateEnd.value.day &&
-          value.month == selectedDateEnd.value.month &&
-          value.year == selectedDateEnd.value.year) {
-        selectedTimeEnd.value = selectedTime.value;
-      }
-    });
-    selectedTime.listen((value) {
-      if (value.isAfter(selectedTimeEnd.value) || !isManualEndDate.value) {
-        selectedTimeEnd.value = value;
-      }
-    });
+    _setUpDateAndTime();
 
-    selectedDateEnd.listen((value) {
-      if (value.day == selectedDate.value.day &&
-          value.month == selectedDate.value.month &&
-          value.year == selectedDate.value.year) {
-        selectedTimeEnd.value = selectedTime.value;
+    mainController.addPageIndexListener((value) {
+      if (value != 2) {
+        resetForm();
+        mainController.taskSelected.value = null;
+      }
+    });
+    mainController.taskSelected.listen((value) {
+      if (value != null) {
+        selectTask(value);
       }
     });
     super.onInit();
   }
 
   void resetForm() {
+    _currentTaskId = null;
+    _currentTaskCalendarId = null;
+
     titleController.clear();
     descriptionController.clear();
 
     selectedDate.value = DateTime.now();
     selectedTime.value = DateTime.now();
+
+    isManualEndDate.value = false;
+    selectedDateEnd.value = DateTime.now();
+    selectedTimeEnd.value = DateTime.now();
 
     selectedCategory.value = TaskCategory.values[0];
     selectedColor.value = TaskColor.values[0];
@@ -172,6 +171,7 @@ class TaskFormController extends GetxController {
 
   void saveTask() async {
     var newTask = Task(
+      id: _currentTaskId, // If is null uuid will be generated
       title: titleController.text.trim(),
       description: descriptionController.text.trim(),
       dateTime: selectedDateTime,
@@ -190,6 +190,8 @@ class TaskFormController extends GetxController {
               selectedTimeEnd.value.minute,
             )
           : null,
+      calendarId:
+          saveInDeviceCalendar.value ? _currentTaskCalendarId ?? "" : "",
     );
 
     if (authController.firebaseUser == null ||
@@ -227,5 +229,62 @@ class TaskFormController extends GetxController {
 
   void setTimeLongBreakSession(double value) {
     timeLongBreakSession.value = value.round();
+  }
+
+  void _setUpDateAndTime() {
+    selectedDate.listen((value) {
+      if (value.isAfter(selectedDateEnd.value) || !isManualEndDate.value) {
+        selectedDateEnd.value = value;
+      }
+      // Al cambiar el dia tambien hay que comprobar la hora
+      if (value.day == selectedDateEnd.value.day &&
+          value.month == selectedDateEnd.value.month &&
+          value.year == selectedDateEnd.value.year) {
+        selectedTimeEnd.value = selectedTime.value;
+      }
+    });
+    selectedTime.listen((value) {
+      if (value.isAfter(selectedTimeEnd.value) || !isManualEndDate.value) {
+        selectedTimeEnd.value = value;
+      }
+    });
+
+    selectedDateEnd.listen((value) {
+      if (value.day == selectedDate.value.day &&
+          value.month == selectedDate.value.month &&
+          value.year == selectedDate.value.year) {
+        selectedTimeEnd.value = selectedTime.value;
+      }
+    });
+  }
+
+  void selectTask(Task task) {
+    _currentTaskId = task.id;
+    _currentTaskCalendarId = task.calendarId;
+
+    titleController.text = task.title;
+    descriptionController.text = task.description;
+
+    selectedDate.value = task.dateTime;
+    selectedTime.value = task.dateTime;
+
+    isManualEndDate.value = task.endDateTime !=
+        task.dateTime.add(
+          Duration(
+            minutes: task.duration,
+          ),
+        );
+    selectedDateEnd.value = task.endDateTime;
+    selectedTimeEnd.value = task.endDateTime;
+
+    selectedCategory.value = task.category;
+    selectedColor.value = task.color;
+
+    saveInDeviceCalendar.value = _currentTaskCalendarId != "";
+
+    countWorkingSession.value = task.workSessions;
+    timeWorkingSession.value = task.workSessionTime;
+    timeBreakSession.value = task.shortBreakTime;
+    timeLongBreakSession.value = task.longBreakTime;
   }
 }

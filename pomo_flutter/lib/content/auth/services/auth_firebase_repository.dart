@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:PomoFlutter/content/auth/errors/auth_errors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -72,6 +74,7 @@ class AuthFirebaseRepository {
     } on FirebaseAuthException catch (e) {
       throw AuthErrors.fromCode(e.code).message;
     } catch (e) {
+      log(e.toString());
       const ex = AuthErrors();
       throw ex.message;
     }

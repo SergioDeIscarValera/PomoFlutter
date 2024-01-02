@@ -6,6 +6,8 @@ abstract class ITaskRepository
     implements GenericRepository<Task, String, String> {
   Future<List<Task>> findAllByDay(
       {required DateTime dateTime, required String idc});
+  Future<List<Task>> findAllBetweenDates(
+      {required DateTime start, required DateTime end, required String idc});
   Future<List<Task>> findAllByCategory(
       {required TaskCategory category, required String idc});
   Future<Task?> saveWithDeviceCalendar(

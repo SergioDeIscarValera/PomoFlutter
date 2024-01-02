@@ -65,15 +65,25 @@ class TaskRepository implements ITaskRepository {
         value.where((element) => element.category == category).toList());
   }
 
+  /// returns all the tasks that are being completed on the day [dateTime],
+  /// that is, that occur that day or that their completion has not yet occurred
+  /// but if their start (or their start is that same day)
   @override
   Future<List<Task>> findAllByDay(
       {required DateTime dateTime, required String idc}) {
     return findAll(idc: idc).then((value) => value
         .where((element) =>
-            element.dateTime.day == dateTime.day &&
-            element.dateTime.month == dateTime.month &&
-            element.dateTime.year == dateTime.year)
+            _isSameDay(element.dateTime, dateTime) ||
+            (element.dateTime.isBefore(dateTime) &&
+                element.endDateTime.isAfter(dateTime)) ||
+            _isSameDay(element.endDateTime, dateTime))
         .toList());
+  }
+
+  bool _isSameDay(DateTime dateTime1, DateTime dateTime2) {
+    return dateTime1.year == dateTime2.year &&
+        dateTime1.month == dateTime2.month &&
+        dateTime1.day == dateTime2.day;
   }
 
   @override
@@ -152,5 +162,14 @@ class TaskRepository implements ITaskRepository {
     for (var task in tasks) {
       await _deleteTaskFromDeviceCalendar(task.calendarId);
     }
+  }
+
+  @override
+  Future<List<Task>> findAllBetweenDates(
+      {required DateTime start, required DateTime end, required String idc}) {
+    return findAll(idc: idc).then((value) => value
+        .where((element) =>
+            element.dateTime.isAfter(start) && element.dateTime.isBefore(end))
+        .toList());
   }
 }
