@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
+import 'package:PomoFlutter/content/home/models/task_schedule_type.dart';
 import 'package:PomoFlutter/content/home/services/calendar_events_device.dart';
 import 'package:PomoFlutter/content/home/services/interface_task_repository.dart';
 import 'package:PomoFlutter/content/home/services/tasks_repository_firebase.dart';
@@ -171,5 +172,43 @@ class TaskRepository implements ITaskRepository {
         .where((element) =>
             element.dateTime.isAfter(start) && element.dateTime.isBefore(end))
         .toList());
+  }
+
+  @override
+  Future<bool?> sheduleNextTask(
+      {required Task task, required String idc}) async {
+    if (task.sheduleType == null) return null;
+    var preDate = DateTime.now().add(task.sheduleType!.duration);
+    var nextDate = DateTime(
+      preDate.year,
+      preDate.month,
+      preDate.day,
+      task.dateTime.hour,
+      task.dateTime.minute,
+      task.dateTime.second,
+    );
+
+    Task? nextTask = Task(
+      title: task.title,
+      description: task.description,
+      dateTime: nextDate,
+      category: task.category,
+      color: task.color,
+      workSessions: task.workSessions,
+      workSessionTime: task.workSessionTime,
+      longBreakTime: task.longBreakTime,
+      shortBreakTime: task.shortBreakTime,
+      calendarId: task.calendarId,
+      comments: task.comments,
+      sheduleType: task.sheduleType,
+    );
+    if (task.calendarId.isEmpty) {
+      nextTask = await save(entity: nextTask, idc: idc);
+    } else {
+      nextTask = await saveWithDeviceCalendar(entity: nextTask, idc: idc);
+    }
+    if (nextTask == null) return false;
+    await deleteById(id: task.id, idc: idc);
+    return true;
   }
 }

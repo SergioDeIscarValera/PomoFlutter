@@ -38,6 +38,9 @@ class TimerController extends GetxController {
         if (taskSelected.value?.isFinished ?? false) {
           saveTask(0);
           _saveStatistics();
+          if (taskSelected.value!.sheduleType != null) {
+            _sheduleNextTask();
+          }
           Get.back();
           return;
         }
@@ -150,6 +153,17 @@ class TimerController extends GetxController {
 
   void _loadSounds() async {
     urlKitchenTimer = await _audioCache.load("Kitchen-Timer-Alarm.mp3");
+  }
+
+  void _sheduleNextTask() async {
+    var result = await _taskRepository.sheduleNextTask(
+        task: taskSelected.value!, idc: _authController.firebaseUser!.email!);
+    if (result == null) return;
+    if (!result) {
+      MySnackBar.snackError("error_shedule_next_task".tr);
+    } else {
+      MySnackBar.snackSuccess("success_shedule_next_task".tr);
+    }
   }
 }
 

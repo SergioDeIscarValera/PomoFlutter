@@ -197,6 +197,14 @@ class MyLocalizations extends Translations {
           "edit_task_message": "Are you sure you want to edit this task?",
           "edit_task_submessage":
               "(If you want to start the task click on the play)",
+          "task_form_input_shedule_type": "Scheduling type (optional)",
+          "task_form_input_shedule_type_tooltip":
+              "If the task is scheduled, when it is finished the next task will be scheduled automatically",
+          "daily_name": "Daily",
+          "weekly_name": "Weekly",
+          "monthly_name": "Monthly",
+          "error_shedule_next_task": "Error scheduling next task",
+          "success_shedule_next_task": "Next task scheduled successfully",
         },
         'es_ES': {
           "app_name": "Pomo Flutter",
@@ -399,6 +407,15 @@ class MyLocalizations extends Translations {
               "¿Estás seguro de que quieres editar esta tarea?",
           "edit_task_submessage":
               "(Si quieres empezar la tarea pulsa en el play)",
+          "task_form_input_shedule_type": "Tipo de programación (opcional)",
+          "task_form_input_shedule_type_tooltip":
+              "Si la tarea está programada, al finalizarla se programará la siguiente tarea automáticamente",
+          "daily_name": "Diaria",
+          "weekly_name": "Semanal",
+          "monthly_name": "Mensual",
+          "error_shedule_next_task": "Error al programar la siguiente tarea",
+          "success_shedule_next_task":
+              "Siguiente tarea programada correctamente",
         },
       };
 }

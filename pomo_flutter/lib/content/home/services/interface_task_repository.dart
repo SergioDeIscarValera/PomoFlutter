@@ -12,6 +12,7 @@ abstract class ITaskRepository
       {required TaskCategory category, required String idc});
   Future<Task?> saveWithDeviceCalendar(
       {required Task entity, required String idc});
+  Future<void> sheduleNextTask({required Task task, required String idc});
 }
 
 abstract class ITaskJsonRepository

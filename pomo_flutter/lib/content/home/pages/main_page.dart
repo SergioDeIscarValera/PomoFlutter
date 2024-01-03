@@ -3,6 +3,7 @@ import 'package:PomoFlutter/content/home/pages/calendar_page.dart';
 import 'package:PomoFlutter/content/home/pages/statistics_page.dart';
 import 'package:PomoFlutter/content/home/pages/task_form_page.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
+import 'package:PomoFlutter/content/home/storage/controller/task_form_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/my_bottom_navigation.dart';
 import 'package:PomoFlutter/content/home/widgets/side_navigation_menu.dart';
 import 'package:PomoFlutter/themes/colors.dart';
@@ -18,7 +19,8 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthController authController = Get.find();
-    MainController homeController = Get.find();
+    MainController mainController = Get.find();
+    Get.find<TaskFormController>();
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       key: scaffoldKey,
@@ -26,11 +28,11 @@ class MainPage extends StatelessWidget {
       body: SafeArea(
         child: ResponsiveLayout(
           mobile: MainBody(
-            mainController: homeController,
+            mainController: mainController,
             authController: authController,
           ),
           tablet: MainBody(
-            mainController: homeController,
+            mainController: mainController,
             authController: authController,
           ),
           desktop: Row(
@@ -40,15 +42,15 @@ class MainPage extends StatelessWidget {
               Flexible(
                 child: SideNavigationMenu(
                   scaffoldKey: scaffoldKey,
-                  mainController: homeController,
-                  pageIndex: homeController.pageIndex,
+                  mainController: mainController,
+                  pageIndex: mainController.pageIndex,
                 ),
               ),
               const SizedBox(width: 30),
               Flexible(
                 flex: 3,
                 child: MainBody(
-                  mainController: homeController,
+                  mainController: mainController,
                   authController: authController,
                 ),
               ),
@@ -58,16 +60,16 @@ class MainPage extends StatelessWidget {
       ),
       bottomNavigationBar: context.width < 500
           ? MyBottomNavigation(
-              pageIndex: homeController.pageIndex,
-              onTap: homeController.setPage,
+              pageIndex: mainController.pageIndex,
+              onTap: mainController.setPage,
             )
           : null,
       drawer: context.width >= 500 && context.width < 1100
           ? Drawer(
               child: SideNavigationMenu(
                 scaffoldKey: scaffoldKey,
-                mainController: homeController,
-                pageIndex: homeController.pageIndex,
+                mainController: mainController,
+                pageIndex: mainController.pageIndex,
               ),
             )
           : null,

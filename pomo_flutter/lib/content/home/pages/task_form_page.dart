@@ -1,5 +1,6 @@
 import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/models/task_colors.dart';
+import 'package:PomoFlutter/content/home/models/task_schedule_type.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/task_form_controller.dart';
 import 'package:PomoFlutter/content/home/widgets/generic_template.dart';
@@ -134,7 +135,6 @@ class TaskFormPage extends StatelessWidget {
                   const SizedBox(height: spaceBetween),
                   //End date and time input
                   ExpansionTile(
-                    initiallyExpanded: taskFormController.isManualEndDate.value,
                     childrenPadding: const EdgeInsets.symmetric(vertical: 20),
                     collapsedIconColor: MyColors.CONTRARY.color,
                     title: Wrap(
@@ -324,6 +324,70 @@ class TaskFormPage extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: spaceBetween),
+                  //Shedule type input
+                  ExpansionTile(
+                    childrenPadding: const EdgeInsets.symmetric(vertical: 20),
+                    collapsedIconColor: MyColors.CONTRARY.color,
+                    title: Wrap(
+                      alignment: WrapAlignment.spaceAround,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Tooltip(
+                          message: "task_form_input_shedule_type_tooltip".tr,
+                          child: Text(
+                            "task_form_input_shedule_type".tr,
+                            style: MyTextStyles.p.textStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Obx(
+                          () => Checkbox(
+                            value: taskFormController.isShedule.value,
+                            onChanged: (value) {
+                              taskFormController.isShedule.value = value!;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    children: [
+                      WrapInMid(
+                        flex: 4,
+                        otherFlex: context.width < 500 ? 0 : 1,
+                        child: Obx(
+                          () => MyDropdownButton<TaskSheduleType>(
+                            value: taskFormController.selectedSheduleType.value,
+                            onChanged: (value) {
+                              taskFormController.selectSheduleType(value!);
+                            },
+                            items: TaskSheduleType.values
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          e.name,
+                                          style: MyTextStyles.p.textStyle,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Icon(
+                                          e.icon,
+                                          color: MyColors.CONTRARY.color,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: spaceBetween),
                   //Slider for count working session

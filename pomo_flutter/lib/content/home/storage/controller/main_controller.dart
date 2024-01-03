@@ -27,13 +27,13 @@ class MainController extends GetxController {
   final Rx<Task?> taskSelected = Rx<Task?>(null);
 
   @override
-  void onInit() async {
+  void onInit() {
     _startTimer();
     _mainPageController.addListener(() {
       _pageIndex.value = _mainPageController.page!.round();
     });
 
-    authController.user.listen((user) async {
+    authController.user.listen((user) {
       if (user == null || user.email == null) return;
       _taskRepository.addListener(
         idc: user.email!,

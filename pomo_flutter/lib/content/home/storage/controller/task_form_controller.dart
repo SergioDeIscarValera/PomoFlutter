@@ -2,6 +2,7 @@ import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/models/task_colors.dart';
+import 'package:PomoFlutter/content/home/models/task_schedule_type.dart';
 import 'package:PomoFlutter/content/home/services/task_repository.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/utils/storage_keys.dart';
@@ -44,6 +45,9 @@ class TaskFormController extends GetxController {
   final RxInt timeLongBreakSession = 15.obs;
 
   final RxBool saveInDeviceCalendar = false.obs;
+
+  final Rx<TaskSheduleType> selectedSheduleType = TaskSheduleType.daily.obs;
+  final RxBool isShedule = false.obs;
 
   String? _currentTaskId;
   String? _currentTaskCalendarId;
@@ -89,6 +93,9 @@ class TaskFormController extends GetxController {
     selectedColor.value = TaskColor.values[0];
 
     saveInDeviceCalendar.value = false;
+
+    selectedSheduleType.value = TaskSheduleType.daily;
+    isShedule.value = false;
 
     //Load config from storage if is mobile
     if (GetPlatform.isWeb) {
@@ -192,6 +199,7 @@ class TaskFormController extends GetxController {
           : null,
       calendarId:
           saveInDeviceCalendar.value ? _currentTaskCalendarId ?? "" : "",
+      sheduleType: isShedule.value ? selectedSheduleType.value : null,
     );
 
     if (authController.firebaseUser == null ||
@@ -286,5 +294,12 @@ class TaskFormController extends GetxController {
     timeWorkingSession.value = task.workSessionTime;
     timeBreakSession.value = task.shortBreakTime;
     timeLongBreakSession.value = task.longBreakTime;
+
+    isShedule.value = task.sheduleType != null;
+    selectedSheduleType.value = task.sheduleType ?? TaskSheduleType.daily;
+  }
+
+  void selectSheduleType(TaskSheduleType taskSheduleType) {
+    selectedSheduleType.value = taskSheduleType;
   }
 }

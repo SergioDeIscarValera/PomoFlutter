@@ -1,5 +1,6 @@
 import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/models/task_colors.dart';
+import 'package:PomoFlutter/content/home/models/task_schedule_type.dart';
 import 'package:PomoFlutter/content/home/models/timer_status.dart';
 import 'package:uuid/uuid.dart';
 
@@ -18,6 +19,7 @@ class Task {
   final int longBreakTime;
   final int shortBreakTime;
   late Map<String, TaskComment> _comments;
+  final TaskSheduleType? sheduleType;
 
   String calendarId;
 
@@ -43,6 +45,7 @@ class Task {
     List<TaskComment>? comments,
     this.calendarId = '',
     DateTime? endDateTime,
+    this.sheduleType,
   }) : _workSessionsCompleted = workSessionsCompleted {
     this.endDateTime = endDateTime ?? dateTime.add(Duration(minutes: duration));
     _comments = comments == null
@@ -82,12 +85,17 @@ class Task {
       endDateTime: json['endDateTime'] != null
           ? DateTime.parse(json['endDateTime'])
           : null,
+      sheduleType: json['sheduleType'] != null
+          ? TaskSheduleType.values
+              .firstWhere((element) => element.id == json['sheduleType'])
+          : null,
     );
   }
 
   String toJson() {
-    return '''
-    {
+    final buffer = StringBuffer();
+    buffer.write("{");
+    buffer.write("""
       "id": "$_id",
       "title": "$title",
       "description": "$description",
@@ -101,11 +109,25 @@ class Task {
       "shortBreakTime": $shortBreakTime,
       "workSessionsCompleted": $_workSessionsCompleted,
       "timeSpent": $timeSpent,
-      "timerStatus": "${timerStatus.id}",
-      "comments": ${_comments.values.map((e) => e.toJson()).toList()},
-      "calendarId": "$calendarId"
+      "timerStatus": "${timerStatus.id}"
+    """);
+    if (_comments.isNotEmpty) {
+      buffer.write(''',
+        "comments": ${_comments.values.map((e) => e.toJson()).toList()}
+      ''');
     }
-    ''';
+    if (calendarId.isNotEmpty) {
+      buffer.write(''',
+        "calendarId": "$calendarId"
+      ''');
+    }
+    if (sheduleType != null) {
+      buffer.write(''',
+        "sheduleType": "${sheduleType?.id}"
+      ''');
+    }
+    buffer.write("}");
+    return buffer.toString();
   }
 
   int get workSessionsCompleted => _workSessionsCompleted;
