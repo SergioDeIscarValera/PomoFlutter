@@ -15,6 +15,8 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:PomoFlutter/content/home/widgets/tasks/commet_item.dart';
 
+import '../widgets/guest_list_item.dart';
+
 class TimerPage extends StatelessWidget {
   const TimerPage({Key? key}) : super(key: key);
 
@@ -62,11 +64,15 @@ class TimerBody extends StatelessWidget {
         child: ListView(
           children: [
             const SizedBox(height: 15),
-            Obx(
-              () => TaskListItemTimer(
-                task: timerController.taskSelected.value!,
-              ),
-            ),
+            Obx(() {
+              if (timerController.taskSelected.value == null) {
+                return Container();
+              } else {
+                return TaskListItemTimer(
+                  task: timerController.taskSelected.value!,
+                );
+              }
+            }),
             const SizedBox(height: 15),
             SizedBox(
               width: double.infinity,
@@ -162,107 +168,154 @@ class TimerBody extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             //Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Obx(() {
-                  if (timerController.timerStatus.value ==
-                      TimerStatus.WORKING) {
-                    return MyIconButton(
-                      icon: Icons.replay,
+            if (timerController.taskSelected.value!.amIPropietary)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Obx(() {
+                    if (timerController.timerStatus.value ==
+                        TimerStatus.WORKING) {
+                      return MyIconButton(
+                        icon: Icons.replay,
+                        onTap: () {
+                          timerController.resetTimer();
+                        },
+                        iconColor: MyColors.CONTRARY.color,
+                        backgroundColor: Get.isDarkMode
+                            ? Colors.grey[800]!
+                            : Colors.grey[300]!,
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }),
+                  Obx(
+                    () => MyIconButton(
+                      icon: timerController.isPlaying.value
+                          ? Icons.pause
+                          : Icons.play_arrow,
                       onTap: () {
-                        timerController.resetTimer();
-                      },
-                      iconColor: MyColors.CONTRARY.color,
-                      backgroundColor: Get.isDarkMode
-                          ? Colors.grey[800]!
-                          : Colors.grey[300]!,
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
-                Obx(
-                  () => MyIconButton(
-                    icon: timerController.isPlaying.value
-                        ? Icons.pause
-                        : Icons.play_arrow,
-                    onTap: () {
-                      timerController.pauseChangeTimer();
-                    },
-                    iconColor: MyColors.LIGHT.color,
-                    backgroundColor: timerController.timerStatus.value.color,
-                    size: 50,
-                  ),
-                ),
-                Obx(() {
-                  if (timerController.timerStatus.value ==
-                      TimerStatus.WORKING) {
-                    return MyIconButton(
-                      icon: Icons.stop,
-                      onTap: () {
-                        timerController.stopTimer(mainController);
-                      },
-                      iconColor: MyColors.CONTRARY.color,
-                      backgroundColor: Get.isDarkMode
-                          ? Colors.grey[800]!
-                          : Colors.grey[300]!,
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
-              ],
-            ),
-            const SizedBox(height: 30),
-            //Comments
-            GenericContainer(
-              direction: Axis.vertical,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "comments".tr,
-                        style: MyTextStyles.h2.textStyle,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    //Button to add comment
-                    MyIconButton(
-                      icon: Icons.add,
-                      onTap: () {
-                        //timerController.addComment();
-                        mainController.addComment(
-                          timerController.taskSelected,
-                        );
-                        timerController.taskSelected.refresh();
+                        timerController.pauseChangeTimer();
                       },
                       iconColor: MyColors.LIGHT.color,
-                      backgroundColor: MyColors.SUCCESS.color,
-                      size: 30,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-                Obx(
-                  () => CommentsList(
-                    listCommets: timerController.taskSelected.value!.comments,
-                    itemList: (comment) => CommetItem(
-                      comment: comment,
-                      mainController: mainController,
-                      timerController: timerController,
+                      backgroundColor: timerController.timerStatus.value.color,
+                      size: 50,
                     ),
                   ),
+                  Obx(() {
+                    if (timerController.timerStatus.value ==
+                        TimerStatus.WORKING) {
+                      return MyIconButton(
+                        icon: Icons.stop,
+                        onTap: () {
+                          timerController.stopTimer(mainController);
+                        },
+                        iconColor: MyColors.CONTRARY.color,
+                        backgroundColor: Get.isDarkMode
+                            ? Colors.grey[800]!
+                            : Colors.grey[300]!,
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }),
+                ],
+              ),
+            const SizedBox(height: 30),
+            //Comments
+            _genericContainerWithAction(
+              title: "comments".tr,
+              child: Obx(
+                () => CommentsList(
+                  listCommets: timerController.taskSelected.value?.comments,
+                  itemList: (comment) => CommetItem(
+                    comment: comment,
+                    mainController: mainController,
+                    timerController: timerController,
+                  ),
                 ),
-              ],
+              ),
+              onButtonTap: () {
+                mainController.addComment(
+                  timerController.taskSelected,
+                );
+              },
             ),
+            const SizedBox(height: 15),
+            // Guests
+            if (timerController.taskSelected.value!.amIPropietary)
+              _genericContainerWithAction(
+                title: "guests_title".tr,
+                child: Obx(() {
+                  if (timerController.taskSelected.value == null) {
+                    return const SizedBox();
+                  } else {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount:
+                          timerController.taskSelected.value!.guests.length,
+                      itemBuilder: (contex, index) {
+                        var guest =
+                            timerController.taskSelected.value!.guests[index];
+                        return GuestListItem(
+                          guest: guest,
+                          onDecline: () {
+                            mainController.removeGuest(
+                              task: timerController.taskSelected.value,
+                              guest: guest,
+                            );
+                          },
+                        );
+                      },
+                    );
+                  }
+                }),
+                onButtonTap: () {
+                  mainController.addGuest(
+                    timerController.taskSelected,
+                  );
+                },
+              ),
             const SizedBox(height: 15),
           ],
         ),
       ),
+    );
+  }
+
+  GenericContainer _genericContainerWithAction({
+    required Widget child,
+    required Function() onButtonTap,
+    required String title,
+  }) {
+    return GenericContainer(
+      direction: Axis.vertical,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: MyTextStyles.h2.textStyle,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            //Button to add comment
+            MyIconButton(
+              icon: Icons.add,
+              onTap: onButtonTap,
+              iconColor: MyColors.LIGHT.color,
+              backgroundColor: MyColors.SUCCESS.color,
+              size: 30,
+            ),
+          ],
+        ),
+        const SizedBox(height: 15),
+        child,
+      ],
     );
   }
 }

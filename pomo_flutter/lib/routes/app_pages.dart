@@ -9,6 +9,7 @@ import 'package:PomoFlutter/content/first_time/pages/first_time_page.dart';
 import 'package:PomoFlutter/content/first_time/storage/binding/first_time_binding.dart';
 import 'package:PomoFlutter/content/home/pages/congratulations_page.dart';
 import 'package:PomoFlutter/content/home/pages/main_page.dart';
+import 'package:PomoFlutter/content/home/pages/notification_page.dart';
 import 'package:PomoFlutter/content/home/pages/task_list_page.dart';
 import 'package:PomoFlutter/content/home/pages/timer_page.dart';
 import 'package:PomoFlutter/content/home/storage/binding/calendary_binding.dart';
@@ -91,6 +92,10 @@ class AppPages {
       name: Routes.DELETE_ACCOUNT.path,
       page: () => const DeleteAcountPage(),
       binding: AuthBinding(),
+    ),
+    GetPage(
+      name: Routes.NOTIFICATIONS.path,
+      page: () => const NotificationPage(),
     ),
   ];
 }

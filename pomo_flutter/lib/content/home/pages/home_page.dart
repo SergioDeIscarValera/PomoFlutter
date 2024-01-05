@@ -9,6 +9,7 @@ import 'package:PomoFlutter/routes/app_routes.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:PomoFlutter/widgets/generic_container.dart';
+import 'package:PomoFlutter/widgets/my_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -33,6 +34,14 @@ class HomePage extends StatelessWidget {
         mainController.setPage(0);
       },
       title: "app_name".tr,
+      header: MyIconButton(
+        icon: Icons.notifications,
+        iconColor: MyColors.CONTRARY.color,
+        backgroundColor: Colors.transparent,
+        onTap: () {
+          Get.toNamed(Routes.NOTIFICATIONS.path);
+        },
+      ),
       body: ListView(
         children: [
           const SizedBox(height: 15),

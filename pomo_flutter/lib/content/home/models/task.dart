@@ -20,6 +20,9 @@ class Task {
   final int shortBreakTime;
   late Map<String, TaskComment> _comments;
   final TaskSheduleType? sheduleType;
+  final List<String> guests;
+  bool amIPropietary;
+  String? propietaryEmail;
 
   String calendarId;
 
@@ -46,6 +49,9 @@ class Task {
     this.calendarId = '',
     DateTime? endDateTime,
     this.sheduleType,
+    this.guests = const [],
+    this.amIPropietary = true,
+    this.propietaryEmail,
   }) : _workSessionsCompleted = workSessionsCompleted {
     this.endDateTime = endDateTime ?? dateTime.add(Duration(minutes: duration));
     _comments = comments == null
@@ -89,6 +95,9 @@ class Task {
           ? TaskSheduleType.values
               .firstWhere((element) => element.id == json['sheduleType'])
           : null,
+      guests: json['guests'] != null
+          ? (json['guests'] as List<dynamic>).map((e) => e.toString()).toList()
+          : [],
     );
   }
 
@@ -124,6 +133,11 @@ class Task {
     if (sheduleType != null) {
       buffer.write(''',
         "sheduleType": "${sheduleType?.id}"
+      ''');
+    }
+    if (guests.isNotEmpty) {
+      buffer.write(''',
+        "guests": ${guests.map((e) => '"$e"').toList()}
       ''');
     }
     buffer.write("}");

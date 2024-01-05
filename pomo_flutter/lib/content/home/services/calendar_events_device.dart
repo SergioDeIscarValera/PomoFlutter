@@ -2,6 +2,7 @@ import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/utils/snakbars.dart';
 import 'package:device_calendar/device_calendar.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class CalendarEventsDevice {
@@ -14,7 +15,49 @@ class CalendarEventsDevice {
 
   CalendarEventsDevice._internal();
 
+  Future<T?> checkCalendarPermissions<T>(
+    Future<T?> Function() whenGranted,
+  ) async {
+    // Verificar si el permiso está concedido
+    PermissionStatus permissionStatus =
+        await Permission.calendarFullAccess.status;
+
+    if (!permissionStatus.isGranted) {
+      // Si el permiso no está concedido, solicitarlo al usuario
+      if (permissionStatus.isPermanentlyDenied) {
+        // Si es la primera vez que se solicita, pedir permiso al usuario
+        permissionStatus = await Permission.calendarFullAccess.request();
+
+        if (!permissionStatus.isGranted) {
+          // Permiso denegado por el usuario, manejar según sea necesario
+          // ...
+          MySnackBar.snackError(
+            "task_form_error_calendar_event_permission".tr,
+          );
+          return null;
+        }
+      } else {
+        // El usuario negó los permisos, se puede redirigir a la configuración de la app
+        // o mostrar un mensaje explicativo de cómo habilitar los permisos manualmente
+        // ...
+        openAppSettings();
+        MySnackBar.snackError(
+          "task_form_error_calendar_event_permission".tr,
+        );
+        return null;
+      }
+    }
+
+    return whenGranted();
+  }
+
   Future<Task?> addTaskDeviceCalendar({required Task task}) async {
+    return await checkCalendarPermissions(() async {
+      return await _addTaskDeviceCalendar(task: task);
+    });
+  }
+
+  Future<Task?> _addTaskDeviceCalendar({required Task task}) async {
     // Obtener el calendario por defecto del dispositivo
     var deviceCalendarPlugin = await _getDeviceCalendarPlugin();
     if (deviceCalendarPlugin == null) {
@@ -53,7 +96,13 @@ class CalendarEventsDevice {
     }
   }
 
-  Future<bool> removeTaskByIdDeviceCalendar({required String id}) async {
+  Future<bool?> removeTaskByIdDeviceCalendar({required String id}) async {
+    return await checkCalendarPermissions(() async {
+      return await _removeTaskByIdDeviceCalendar(id: id);
+    });
+  }
+
+  Future<bool> _removeTaskByIdDeviceCalendar({required String id}) async {
     // Obtener el calendario por defecto del dispositivo
     var deviceCalendarPlugin = await _getDeviceCalendarPlugin();
     if (deviceCalendarPlugin == null) {
@@ -77,11 +126,17 @@ class CalendarEventsDevice {
     }
   }
 
-  Future<bool> removeTaskDeviceCalendar({required Task task}) async {
+  Future<bool?> removeTaskDeviceCalendar({required Task task}) async {
     return removeTaskByIdDeviceCalendar(id: task.calendarId);
   }
 
-  Future<bool> isTaskByIdInDeviceCalendar({required String id}) async {
+  Future<bool?> isTaskByIdInDeviceCalendar({required String id}) async {
+    return await checkCalendarPermissions(() async {
+      return await _isTaskByIdDeviceCalendar(id: id);
+    });
+  }
+
+  Future<bool> _isTaskByIdDeviceCalendar({required String id}) async {
     // Obtener el calendario por defecto del dispositivo
     var deviceCalendarPlugin = await _getDeviceCalendarPlugin();
     if (deviceCalendarPlugin == null) {
@@ -108,7 +163,7 @@ class CalendarEventsDevice {
     }
   }
 
-  Future<bool> isTaskInDeviceCalendar({required Task task}) async {
+  Future<bool?> isTaskInDeviceCalendar({required Task task}) async {
     return isTaskByIdInDeviceCalendar(id: task.id);
   }
 

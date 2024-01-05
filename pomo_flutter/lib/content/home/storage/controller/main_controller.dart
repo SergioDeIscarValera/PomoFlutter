@@ -1,11 +1,18 @@
 import 'dart:async';
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
+import 'package:PomoFlutter/content/home/models/task_invitation.dart';
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_comment.dart';
-import 'package:PomoFlutter/content/home/services/task_repository.dart';
+import 'package:PomoFlutter/content/home/services/notification/interface_notication_repository.dart';
+import 'package:PomoFlutter/content/home/services/notification/notification_repository.dart';
+import 'package:PomoFlutter/content/home/services/task/task_repository.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
+import 'package:PomoFlutter/services/id_user/id_user_repository.dart';
+import 'package:PomoFlutter/services/id_user/interface_id_user_repository.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
+import 'package:PomoFlutter/utils/form_validator.dart';
+import 'package:PomoFlutter/utils/snakbars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,13 +26,22 @@ class MainController extends GetxController {
 
   final AuthController authController = Get.find();
   final TaskRepository _taskRepository = TaskRepository();
+  final IIdUserRepository _idUserRepository = IdUserRepository();
+  final INotificationRepository _notificationRepository =
+      NotificationRepository();
 
   final Rx<DateTime> now = DateTime.now().obs;
 
   final TextEditingController _commentController = TextEditingController();
+  final TextEditingController _guestEmailController = TextEditingController();
 
   final Rx<Task?> taskSelected = Rx<Task?>(null);
 
+  final RxList<TaskInvitation> notifications = <TaskInvitation>[].obs;
+
+  final FormValidator formValidator = FormValidator();
+
+  int _lastNotificationCount = 0;
   @override
   void onInit() {
     _startTimer();
@@ -45,11 +61,27 @@ class MainController extends GetxController {
 
           // If all tasks are done, go to Get.toNamed(Routes.CONGRATULATIONS.path);
           if (totalTasks.values.every((element) => element.isFinished)) {
-            Get.toNamed(Routes.CONGRATULATIONS.path);
+            //Get.toNamed(Routes.CONGRATULATIONS.path);
           }
         },
       );
     });
+
+    _notificationRepository.addListener(
+      idc: authController.firebaseUser!.email!,
+      listener: (newNotifications) {
+        notifications.clear();
+        notifications.addAll(newNotifications);
+        var acceptedNotifications =
+            notifications.where((element) => element.state).toList();
+        if (notifications.length - acceptedNotifications.length >
+            _lastNotificationCount) {
+          MySnackBar.snackSuccess('new_task_invitation'.tr);
+        }
+        _lastNotificationCount = notifications.length;
+        _addTasksFromNotifications(acceptedNotifications);
+      },
+    );
 
     super.onInit();
   }
@@ -73,6 +105,10 @@ class MainController extends GetxController {
   }
 
   void deleteTask(Task task) {
+    if (!task.amIPropietary) {
+      MySnackBar.snackError('you_are_not_the_propietary'.tr);
+      return;
+    }
     Get.defaultDialog(
       title: 'delete_task'.tr,
       middleText: 'delete_task_message'.tr,
@@ -88,9 +124,6 @@ class MainController extends GetxController {
       buttonColor: MyColors.CURRENT.color,
       onConfirm: () {
         _deleteTask(task);
-        Get.back();
-      },
-      onCancel: () {
         Get.back();
       },
     );
@@ -143,13 +176,14 @@ class MainController extends GetxController {
         ],
       ),
       onConfirm: () {
+        if (_commentController.text.trim().isEmpty) return;
         _addComment(task.value!);
         task.refresh();
         _commentController.clear();
         Get.back();
       },
       onCancel: () {
-        Get.back();
+        _commentController.clear();
       },
     );
   }
@@ -162,12 +196,20 @@ class MainController extends GetxController {
           authController.firebaseUser!.email!.split('@')[0],
     );
 
+    var email = task.amIPropietary
+        ? authController.firebaseUser!.email!
+        : task.propietaryEmail!;
+
     task.addComment(comment);
-    _taskRepository.save(
-        entity: task, idc: authController.firebaseUser!.email!);
+    _taskRepository.save(entity: task, idc: email);
   }
 
   void deleteComment(Rx<Task?> taskSelected, TaskComment comment) {
+    if (comment.userName != authController.firebaseUser!.displayName &&
+        !taskSelected.value!.amIPropietary) {
+      MySnackBar.snackError('you_are_not_the_propietary'.tr);
+      return;
+    }
     Get.defaultDialog(
       title: 'delete_comment'.tr,
       middleText: 'delete_comment_message'.tr,
@@ -186,9 +228,6 @@ class MainController extends GetxController {
         taskSelected.refresh();
         Get.back();
       },
-      onCancel: () {
-        Get.back();
-      },
     );
   }
 
@@ -205,6 +244,10 @@ class MainController extends GetxController {
   }
 
   void editTask(Task task) {
+    if (!task.amIPropietary) {
+      MySnackBar.snackError('you_are_not_the_propietary'.tr);
+      return;
+    }
     Get.defaultDialog(
       title: 'edit_task'.tr,
       textConfirm: "confirm".tr,
@@ -239,9 +282,222 @@ class MainController extends GetxController {
         _mainPageController.jumpToPage(2);
         Get.back();
       },
-      onCancel: () {
+    );
+  }
+
+  void addGuest(Rx<Task?> taskSelected) {
+    //Show dialog to add guest (IdUser)
+    Get.defaultDialog(
+        title: 'add_guest'.tr,
+        middleText: 'add_guest_message'.tr,
+        textConfirm: "confirm".tr,
+        textCancel: "cancel".tr,
+        titleStyle: MyTextStyles.h2.textStyle.copyWith(
+          color: MyColors.CONTRARY.color,
+        ),
+        middleTextStyle: MyTextStyles.p.textStyle,
+        cancelTextColor: MyColors.CONTRARY.color,
+        confirmTextColor: MyColors.CONTRARY.color,
+        backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+        buttonColor: MyColors.CURRENT.color,
+        content: Column(
+          children: [
+            TextField(
+              controller: _guestEmailController,
+              decoration: InputDecoration(
+                hintText: 'guest_email'.tr,
+                hintStyle: MyTextStyles.p.textStyle.copyWith(
+                  color: MyColors.CONTRARY.color,
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: MyColors.CONTRARY.color,
+                  ),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: MyColors.CURRENT.color,
+                  ),
+                ),
+              ),
+              style: MyTextStyles.p.textStyle.copyWith(
+                color: MyColors.CONTRARY.color,
+              ),
+            ),
+          ],
+        ),
+        onConfirm: () async {
+          var guestEmail = _guestEmailController.text.trim();
+          if (formValidator.isValidEmail(guestEmail) != null ||
+              guestEmail == authController.firebaseUser!.email!) {
+            MySnackBar.snackError('email_error'.tr);
+            return;
+          }
+          bool? result = await _addGuest(taskSelected.value!, guestEmail);
+          taskSelected.refresh();
+          _guestEmailController.clear();
+          Get.back();
+          switch (result) {
+            case null:
+              MySnackBar.snackWarning('guest_already_added'.tr);
+              break;
+            case true:
+              MySnackBar.snackSuccess('guest_added'.tr);
+              break;
+            case false:
+              MySnackBar.snackError('guest_not_added'.tr);
+              break;
+          }
+        },
+        onCancel: () {
+          _guestEmailController.clear();
+        });
+  }
+
+  Future<bool?> _addGuest(Task task, String guestEmail) async {
+    if (!await _idUserRepository.existEmail(email: guestEmail)) {
+      MySnackBar.snackError('guest_not_exist'.tr);
+      return false;
+    }
+    var notification = TaskInvitation(
+      taskIdTrasmitter: task.id,
+      transmitterEmail: authController.firebaseUser!.email!,
+      taskTitle: task.title,
+      dateTime: now.value,
+    );
+    if (await _notificationRepository.existsById(
+        id: notification.id, idc: guestEmail)) {
+      return null;
+    }
+
+    var result = await _notificationRepository.save(
+      entity: notification,
+      idc: guestEmail,
+    );
+
+    return result != null;
+  }
+
+  void acceptTaskInvitation(TaskInvitation notification) async {
+    var task = await _taskRepository.findById(
+      id: notification.taskIdTrasmitter,
+      idc: notification.transmitterEmail,
+    );
+    if (task == null) {
+      _deleteTaskInvitation(notification);
+      MySnackBar.snackError('task_not_exist'.tr);
+      return;
+    }
+    task.guests.add(authController.firebaseUser!.email!);
+    var taskResult = await _taskRepository.save(
+        entity: task, idc: notification.transmitterEmail);
+
+    if (taskResult == null) {
+      _deleteTaskInvitation(notification);
+      MySnackBar.snackError('task_not_exist'.tr);
+      return;
+    }
+
+    notification.state = true;
+    var result = await _notificationRepository.save(
+      entity: notification,
+      idc: authController.firebaseUser!.email!,
+    );
+
+    if (result == null) {
+      _deleteTaskInvitation(notification);
+      MySnackBar.snackError('notification_error_saving'.tr);
+      return;
+    }
+
+    MySnackBar.snackSuccess('task_accepted'.tr);
+  }
+
+  void declineTaskInvitation(TaskInvitation notification) {
+    //Show dialog to decline task invitation
+    Get.defaultDialog(
+      title: 'decline_task_invitation'.tr,
+      middleText: 'decline_task_invitation_message'.tr,
+      textConfirm: "confirm".tr,
+      textCancel: "cancel".tr,
+      titleStyle: MyTextStyles.h2.textStyle.copyWith(
+        color: MyColors.CONTRARY.color,
+      ),
+      middleTextStyle: MyTextStyles.p.textStyle,
+      cancelTextColor: MyColors.CONTRARY.color,
+      confirmTextColor: MyColors.DANGER.color,
+      backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+      buttonColor: MyColors.CURRENT.color,
+      onConfirm: () {
+        _deleteTaskInvitation(notification);
         Get.back();
       },
+    );
+  }
+
+  void _deleteTaskInvitation(TaskInvitation notification) async {
+    var task = await _taskRepository.findById(
+      id: notification.taskIdTrasmitter,
+      idc: notification.transmitterEmail,
+    );
+
+    if (task != null) {
+      task.guests.remove(authController.firebaseUser!.email!);
+      await _taskRepository.save(
+        entity: task,
+        idc: notification.transmitterEmail,
+      );
+    }
+
+    _notificationRepository.delete(
+      entity: notification,
+      idc: authController.firebaseUser!.email!,
+    );
+  }
+
+  void _addTasksFromNotifications(
+    List<TaskInvitation> acceptedNotifications,
+  ) async {
+    var tasksFutures = acceptedNotifications.map(
+      (noti) => _taskRepository.findById(
+        id: noti.taskIdTrasmitter,
+        idc: noti.transmitterEmail,
+      ),
+    );
+
+    List<Task?> tasks = await Future.wait(tasksFutures);
+
+    //remove notifications failed from database
+    var notificationsToDelete = acceptedNotifications
+        .where((element) =>
+            !tasks.any((task) => task?.id == element.taskIdTrasmitter))
+        .toList();
+    for (var notification in notificationsToDelete) {
+      _deleteTaskInvitation(notification);
+    }
+
+    totalTasks.removeWhere((key, value) => !value.amIPropietary);
+    for (var task in tasks) {
+      if (task == null) continue;
+      task.amIPropietary = false;
+      task.propietaryEmail = acceptedNotifications
+          .firstWhere((element) => element.taskIdTrasmitter == task.id)
+          .transmitterEmail;
+      totalTasks[task.id] = task;
+    }
+  }
+
+  void removeGuest({Task? task, required String guest}) async {
+    if (task == null || !task.amIPropietary) return;
+    //Remove notification from guest
+    var id = "${authController.firebaseUser!.email!}___${task.id}";
+    await _notificationRepository.deleteById(id: id, idc: guest);
+
+    //Remove guest from task
+    task.guests.remove(guest);
+    await _taskRepository.save(
+      entity: task,
+      idc: authController.firebaseUser!.email!,
     );
   }
 }

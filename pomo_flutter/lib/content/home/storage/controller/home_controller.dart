@@ -1,6 +1,6 @@
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
-import 'package:PomoFlutter/content/home/services/task_repository.dart';
+import 'package:PomoFlutter/content/home/services/task/task_repository.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:get/get.dart';
 
@@ -38,9 +38,10 @@ class HomeController extends GetxController {
     mainController.totalTasks.listen((event) {
       todayTasks.clear();
       event.forEach((key, value) {
-        if (value.dateTime.day == mainController.now.value.day &&
-            value.dateTime.month == mainController.now.value.month &&
-            value.dateTime.year == mainController.now.value.year) {
+        if (_isSameDay(value.dateTime, mainController.now.value) ||
+            (value.dateTime.isBefore(mainController.now.value) &&
+                value.endDateTime.isAfter(mainController.now.value)) ||
+            _isSameDay(value.endDateTime, mainController.now.value)) {
           todayTasks[key] = value;
         }
       });
@@ -48,6 +49,12 @@ class HomeController extends GetxController {
     });
 
     super.onInit();
+  }
+
+  bool _isSameDay(DateTime dateTime1, DateTime dateTime2) {
+    return dateTime1.year == dateTime2.year &&
+        dateTime1.month == dateTime2.month &&
+        dateTime1.day == dateTime2.day;
   }
 
   void clearDoneTasks() {

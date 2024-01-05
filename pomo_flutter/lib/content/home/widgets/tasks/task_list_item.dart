@@ -76,14 +76,25 @@ class TaskListItem extends StatelessWidget {
                             ? MainAxisAlignment.spaceBetween
                             : MainAxisAlignment.center,
                         children: [
-                          Text(
-                            task.title,
-                            style: MyTextStyles.p.textStyle.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                          Row(
+                            children: [
+                              if (!task.amIPropietary)
+                                Icon(
+                                  Icons.share,
+                                  color: MyColors.CONTRARY.color,
+                                  size: 15,
+                                ),
+                              const SizedBox(width: 10),
+                              Text(
+                                task.title,
+                                style: MyTextStyles.p.textStyle.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ],
                           ),
                           Text(
                             task.description,

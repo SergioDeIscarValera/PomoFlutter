@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:PomoFlutter/content/home/services/interface_daily_data_repository.dart';
+import 'package:PomoFlutter/content/home/services/daily_data/interface_daily_data_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DailyDataRepositoryFirebase implements IDailyDataJsonRepository {
@@ -29,9 +30,9 @@ class DailyDataRepositoryFirebase implements IDailyDataJsonRepository {
   }
 
   @override
-  void addListener(
+  StreamSubscription<DocumentSnapshot> addListener(
       {required String idc, required Function(List<String> p1) listener}) {
-    FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection(_collection)
         .doc(idc)
         .snapshots()

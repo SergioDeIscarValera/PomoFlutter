@@ -8,7 +8,7 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SplashController controller = Get.find();
+    Get.find<SplashController>();
     return Scaffold(
       backgroundColor: Get.isDarkMode
           ? MyColors.PRIMARY_EMPHSIS.color

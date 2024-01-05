@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 /// Generic repository interface
 /// T: Entity type
 /// ID: Entity ID type
@@ -15,5 +19,6 @@ abstract class GenericRepository<T, ID, IDC> {
   Future<bool> exists({required T entity, required IDC idc});
   Future<int> count({required IDC idc});
 
-  void addListener({required IDC idc, required Function(List<T>) listener});
+  StreamSubscription<DocumentSnapshot> addListener(
+      {required IDC idc, required Function(List<T>) listener});
 }

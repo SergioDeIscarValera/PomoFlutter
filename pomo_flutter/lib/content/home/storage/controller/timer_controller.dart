@@ -3,15 +3,20 @@ import 'dart:async';
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/timer_status.dart';
-import 'package:PomoFlutter/content/home/services/task_repository.dart';
+import 'package:PomoFlutter/content/home/services/notification/interface_notication_repository.dart';
+import 'package:PomoFlutter/content/home/services/notification/notification_repository.dart';
+import 'package:PomoFlutter/content/home/services/task/task_repository.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/storage/controller/statistics_controller.dart';
 import 'package:PomoFlutter/utils/snakbars.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class TimerController extends GetxController {
   final Rx<Task?> taskSelected = Rx<Task?>(null);
+  StreamSubscription<DocumentSnapshot>? _taskListener;
+  late String _taskListenerEmail;
 
   final RxDouble currentMax = 1.0.obs;
   final RxDouble current = 0.0.obs;
@@ -27,6 +32,8 @@ class TimerController extends GetxController {
   final TaskRepository _taskRepository = TaskRepository();
   final AuthController _authController = Get.find();
   final StatisticsController _statisticsController = Get.find();
+  final INotificationRepository _notificationRepository =
+      NotificationRepository();
 
   late final Cronometro _cronometro = Cronometro(onTick: () {
     if (current.value >= currentMax.value) {
@@ -36,7 +43,7 @@ class TimerController extends GetxController {
       if (timerStatus.value == TimerStatus.WORKING) {
         taskSelected.value?.addWorkSession();
         if (taskSelected.value?.isFinished ?? false) {
-          saveTask(0);
+          saveTask(timeSpentInThisWorkSession: 0);
           _saveStatistics();
           if (taskSelected.value!.sheduleType != null) {
             _sheduleNextTask();
@@ -50,7 +57,7 @@ class TimerController extends GetxController {
           ? TimerStatus.BREAK
           : TimerStatus.WORKING;
       taskSelected.refresh();
-      saveTask(0);
+      saveTask(timeSpentInThisWorkSession: 0);
       current.value = 0;
       _lastTime = 0;
       isPlaying.value = false;
@@ -62,6 +69,31 @@ class TimerController extends GetxController {
   @override
   void onInit() {
     taskSelected.listen((task) {
+      if (task == null && _taskListener != null) {
+        if (_taskListenerEmail != _authController.firebaseUser!.email!) {
+          //Para que actualice las tareas compartidas
+          _refreshSharedTasks();
+        }
+        _taskListener?.cancel();
+        _taskListener = null;
+        return;
+      }
+      if (task != null && _taskListener == null) {
+        _taskListenerEmail = task.amIPropietary
+            ? _authController.firebaseUser!.email!
+            : task.propietaryEmail!;
+        _taskListener = _taskRepository.addListenerToSingleTask(
+            idc: _taskListenerEmail,
+            id: task.id,
+            task: (newTask) {
+              if (_taskListenerEmail != _authController.firebaseUser!.email!) {
+                newTask.amIPropietary = false;
+                newTask.propietaryEmail = _taskListenerEmail;
+              }
+              taskSelected.value = newTask;
+            });
+      }
+
       if (task?.timerStatus == TimerStatus.WORKING) {
         currentMax.value = (task?.workSessionTime.toDouble() ?? 1.0) * 60.0;
       } else if ((task?.workSessionsCompleted ?? 1.0) % 4 == 0) {
@@ -78,7 +110,7 @@ class TimerController extends GetxController {
     isPlaying.listen((value) {
       if (!value) {
         _cronometro.pausar();
-        saveTask(current.value);
+        saveTask(timeSpentInThisWorkSession: current.value);
         // Add time to statistics
         _saveStatistics();
       } else {
@@ -104,7 +136,7 @@ class TimerController extends GetxController {
   void resetTimer() {
     current.value = 0;
     isPlaying.value = false;
-    saveTask(0);
+    saveTask(timeSpentInThisWorkSession: 0);
   }
 
   void pauseChangeTimer() {
@@ -114,7 +146,7 @@ class TimerController extends GetxController {
   void stopTimer(MainController mainController) {
     isPlaying.value = false;
     taskSelected.value?.timeSpent = current.value.toInt();
-    saveTask(current.value);
+    saveTask(timeSpentInThisWorkSession: current.value);
     current.value = 0;
     mainController.setPage(0);
     Get.back();
@@ -123,18 +155,29 @@ class TimerController extends GetxController {
   void goBack(MainController mainController) {
     mainController.setPage(0);
     if (isPlaying.value) {
-      saveTask(current.value);
+      saveTask(timeSpentInThisWorkSession: current.value, unselect: true);
       Get.back();
       MySnackBar.snackWarning("task_stopped".tr);
     } else {
+      taskSelected.value = null;
       Get.back();
     }
   }
 
-  void saveTask(double timeSpentInThisWorkSession) async {
+  void saveTask(
+      {required double timeSpentInThisWorkSession,
+      bool unselect = false}) async {
     taskSelected.value?.timeSpent = timeSpentInThisWorkSession.toInt();
-    _taskRepository.save(
-        entity: taskSelected.value!, idc: _authController.firebaseUser!.email!);
+    var email = taskSelected.value!.amIPropietary
+        ? _authController.firebaseUser!.email!
+        : taskSelected.value!.propietaryEmail!;
+    await _taskRepository.save(
+      entity: taskSelected.value!,
+      idc: email,
+    );
+    if (unselect) {
+      taskSelected.value = null;
+    }
   }
 
   void _saveStatistics() {
@@ -164,6 +207,14 @@ class TimerController extends GetxController {
     } else {
       MySnackBar.snackSuccess("success_shedule_next_task".tr);
     }
+  }
+
+  void _refreshSharedTasks() async {
+    var total = await _notificationRepository.findAll(
+        idc: _authController.firebaseUser!.email!);
+    if (total.isEmpty) return;
+    await _notificationRepository.save(
+        entity: total[0], idc: _authController.firebaseUser!.email!);
   }
 }
 

@@ -51,16 +51,19 @@ class CommetItem extends StatelessWidget {
                 ),
                 height: size,
                 width: size,
-                child: Image.network(
-                  comment.userPhotoUrl ??
-                      "https://i.postimg.cc/WzNTXrSJ/logo.png",
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.network(
-                      "https://i.postimg.cc/WzNTXrSJ/logo.png",
-                      fit: BoxFit.cover,
-                    );
-                  },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(
+                    comment.userPhotoUrl ??
+                        "https://i.postimg.cc/WzNTXrSJ/logo.png",
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.network(
+                        "https://i.postimg.cc/WzNTXrSJ/logo.png",
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ),
                 ),
               ),
               const SizedBox(width: 10),

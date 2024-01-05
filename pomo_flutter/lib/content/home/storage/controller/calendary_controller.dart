@@ -1,5 +1,4 @@
 import 'package:PomoFlutter/content/home/models/task.dart';
-import 'package:PomoFlutter/content/home/services/task_repository.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,13 +15,13 @@ class CalendaryController extends GetxController {
   @override
   void onInit() {
     weekDays.value = _getWeekDays();
-    _filterList();
+    _filterList(tasks: mainController.totalTasks.values.toList());
     selectedDate.listen((event) {
       weekDays.value = _getWeekDays();
-      _filterList();
+      _filterList(tasks: mainController.totalTasks.values.toList());
     });
     mainController.totalTasks.listen((event) {
-      _filterList();
+      _filterList(tasks: event.values.toList());
     });
     super.onInit();
   }
@@ -58,7 +57,29 @@ class CalendaryController extends GetxController {
     });
   }
 
-  void _filterList() async {
+  bool _isSameDay(DateTime dateTime1, DateTime dateTime2) {
+    return dateTime1.year == dateTime2.year &&
+        dateTime1.month == dateTime2.month &&
+        dateTime1.day == dateTime2.day;
+  }
+
+  void _filterList({required List<Task> tasks}) {
+    selectedDayTasks.clear();
+    var taskFiltered = tasks
+        .where((element) =>
+            _isSameDay(element.dateTime, selectedDate.value) ||
+            (element.dateTime.isBefore(selectedDate.value) &&
+                element.endDateTime.isAfter(selectedDate.value)) ||
+            _isSameDay(element.endDateTime, selectedDate.value))
+        .toList();
+    // Sort tasks by dateTime
+    for (var task in taskFiltered
+      ..sort((a, b) => a.dateTime.compareTo(b.dateTime))) {
+      selectedDayTasks[task.id] = task;
+    }
+  }
+
+  /*void _filterList() async {
     var tasks = await TaskRepository().findAllByDay(
       dateTime: selectedDate.value,
       idc: mainController.authController.firebaseUser!.email!,
@@ -68,7 +89,7 @@ class CalendaryController extends GetxController {
     for (var task in tasks..sort((a, b) => a.dateTime.compareTo(b.dateTime))) {
       selectedDayTasks[task.id] = task;
     }
-  }
+  }*/
 
   void resetSelectedDate() {
     selectedDate.value = DateTime.now();

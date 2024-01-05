@@ -11,13 +11,13 @@ class CommentsList extends StatelessWidget {
     required this.itemList,
   });
 
-  final List<TaskComment> listCommets;
+  final List<TaskComment>? listCommets;
   final Widget Function(TaskComment) itemList;
 
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
-      if (listCommets.isEmpty) {
+      if (listCommets == null || listCommets!.isEmpty) {
         return Center(
           child: Text(
             "no_comments".tr,
@@ -30,9 +30,9 @@ class CommentsList extends StatelessWidget {
         );
       }
       return ListView.builder(
-        itemCount: listCommets.length,
+        itemCount: listCommets!.length,
         itemBuilder: (context, index) {
-          return itemList(listCommets[index]);
+          return itemList(listCommets![index]);
         },
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

@@ -1,6 +1,9 @@
 import 'package:PomoFlutter/content/auth/errors/auth_errors.dart';
 import 'package:PomoFlutter/content/auth/services/auth_firebase_repository.dart';
+import 'package:PomoFlutter/models/id_user.dart';
 import 'package:PomoFlutter/routes/app_routes.dart';
+import 'package:PomoFlutter/services/id_user/id_user_repository.dart';
+import 'package:PomoFlutter/services/id_user/interface_id_user_repository.dart';
 import 'package:PomoFlutter/utils/snakbars.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +24,8 @@ class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Stream<User?> get user => _auth.authStateChanges();
 
+  final IIdUserRepository _idUserRepository = IdUserRepository();
+
   @override
   void onReady() {
     ever(_firebaseUser, handleAuthChanged);
@@ -29,24 +34,25 @@ class AuthController extends GetxController {
   }
 
   handleAuthChanged(User? newUser) async {
-    if (newUser == null || newUser.isAnonymous == true) {
+    var current =
+        Routes.values.firstWhere((element) => element.path == Get.currentRoute);
+
+    if ((newUser == null || newUser.isAnonymous == true) &&
+        current != Routes.FIRST_TIME) {
       Get.offAllNamed(Routes.SPLASH.path);
       return;
     }
-    var pageIsPolicy = Get.currentRoute == Routes.PRIVACY_POLICY.path
-        ? 1
-        : Get.currentRoute == Routes.DELETE_ACCOUNT.path
-            ? 2
-            : 0;
-    if (newUser.emailVerified) {
+
+    switch (current) {
+      case Routes.PRIVACY_POLICY:
+        return;
+      default:
+    }
+    if (newUser!.emailVerified) {
+      _checkIdUser();
       Get.offAllNamed(Routes.MAIN.path);
     } else {
       Get.offAllNamed(Routes.EMAIL_VERIFICATION.path);
-    }
-    if (pageIsPolicy != 0) {
-      Get.offAllNamed(pageIsPolicy == 1
-          ? Routes.PRIVACY_POLICY.path
-          : Routes.DELETE_ACCOUNT.path);
     }
   }
 
@@ -122,5 +128,17 @@ class AuthController extends GetxController {
     } catch (e) {
       MySnackBar.snackError(e.toString());
     }
+  }
+
+  var _ischecking = false;
+  void _checkIdUser() async {
+    if (_ischecking) return;
+    _ischecking = true;
+    if (await _idUserRepository.existsById(
+      id: firebaseUser!.email!,
+      idc: firebaseUser!.email!,
+    )) return;
+    var idUser = IdUser(email: firebaseUser!.email!);
+    await _idUserRepository.save(entity: idUser, idc: firebaseUser!.email!);
   }
 }

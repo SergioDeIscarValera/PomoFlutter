@@ -3,7 +3,7 @@ import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/models/task_colors.dart';
 import 'package:PomoFlutter/content/home/models/task_schedule_type.dart';
-import 'package:PomoFlutter/content/home/services/task_repository.dart';
+import 'package:PomoFlutter/content/home/services/task/task_repository.dart';
 import 'package:PomoFlutter/content/home/storage/controller/main_controller.dart';
 import 'package:PomoFlutter/content/home/utils/storage_keys.dart';
 import 'package:PomoFlutter/utils/snakbars.dart';

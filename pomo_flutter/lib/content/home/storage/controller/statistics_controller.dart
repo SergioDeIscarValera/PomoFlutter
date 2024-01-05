@@ -2,8 +2,8 @@ import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart
 import 'package:PomoFlutter/content/home/models/daily_data.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/models/timer_status.dart';
-import 'package:PomoFlutter/content/home/services/daily_data_repository.dart';
-import 'package:PomoFlutter/content/home/services/interface_daily_data_repository.dart';
+import 'package:PomoFlutter/content/home/services/daily_data/daily_data_repository.dart';
+import 'package:PomoFlutter/content/home/services/daily_data/interface_daily_data_repository.dart';
 import 'package:get/get.dart';
 
 class StatisticsController extends GetxController {

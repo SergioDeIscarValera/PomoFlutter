@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:PomoFlutter/content/home/models/daily_data.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
-import 'package:PomoFlutter/content/home/services/daily_data_repository_firebase.dart';
-import 'package:PomoFlutter/content/home/services/interface_daily_data_repository.dart';
+import 'package:PomoFlutter/content/home/services/daily_data/daily_data_repository_firebase.dart';
+import 'package:PomoFlutter/content/home/services/daily_data/interface_daily_data_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DailyDataRepository implements IDailyDataRepository {
   static final DailyDataRepository _singleton = DailyDataRepository._internal();
@@ -18,9 +20,9 @@ class DailyDataRepository implements IDailyDataRepository {
       DailyDataRepositoryFirebase();
 
   @override
-  void addListener(
+  StreamSubscription<DocumentSnapshot> addListener(
       {required String idc, required Function(List<DailyData> p1) listener}) {
-    _dailyDataJsonRepository.addListener(
+    return _dailyDataJsonRepository.addListener(
         idc: idc,
         listener: (jsonList) {
           var taskList = jsonList

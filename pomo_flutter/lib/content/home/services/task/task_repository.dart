@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:PomoFlutter/content/home/models/task.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/models/task_schedule_type.dart';
 import 'package:PomoFlutter/content/home/services/calendar_events_device.dart';
-import 'package:PomoFlutter/content/home/services/interface_task_repository.dart';
-import 'package:PomoFlutter/content/home/services/tasks_repository_firebase.dart';
+import 'package:PomoFlutter/content/home/services/task/interface_task_repository.dart';
+import 'package:PomoFlutter/content/home/services/task/tasks_repository_firebase.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class TaskRepository implements ITaskRepository {
@@ -17,7 +19,7 @@ class TaskRepository implements ITaskRepository {
 
   TaskRepository._internal();
 
-  final ITaskJsonRepository _taskJsonRepository = TaskRepositoryFirebase();
+  final ITaskRepositoryJson _taskJsonRepository = TaskRepositoryFirebase();
   final CalendarEventsDevice _calendarEventsDevice = CalendarEventsDevice();
 
   @override
@@ -127,16 +129,30 @@ class TaskRepository implements ITaskRepository {
   }
 
   @override
-  void addListener({
+  StreamSubscription<DocumentSnapshot> addListener({
     required String idc,
     required Function(List<Task>) listener,
   }) {
-    _taskJsonRepository.addListener(
+    return _taskJsonRepository.addListener(
         idc: idc,
         listener: (jsonList) {
           var taskList =
               jsonList.map((e) => Task.fromJson(json: jsonDecode(e)));
           listener(taskList.toList());
+        });
+  }
+
+  @override
+  StreamSubscription<DocumentSnapshot> addListenerToSingleTask({
+    required String idc,
+    required String id,
+    required Function(Task) task,
+  }) {
+    return _taskJsonRepository.addListenerToSingleTask(
+        idc: idc,
+        id: id,
+        listenear: (json) {
+          task(Task.fromJson(json: jsonDecode(json)));
         });
   }
 
@@ -153,7 +169,8 @@ class TaskRepository implements ITaskRepository {
 
   Future<void> _deleteTaskFromDeviceCalendar(String id) async {
     if (GetPlatform.isWeb) return;
-    if (await _calendarEventsDevice.isTaskByIdInDeviceCalendar(id: id)) {
+    if (await _calendarEventsDevice.isTaskByIdInDeviceCalendar(id: id) ??
+        false) {
       await _calendarEventsDevice.removeTaskByIdDeviceCalendar(id: id);
     }
   }

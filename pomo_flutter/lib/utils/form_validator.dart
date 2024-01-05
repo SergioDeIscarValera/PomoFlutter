@@ -1,6 +1,14 @@
 import 'package:get/get.dart';
 
 class FormValidator {
+  static final FormValidator _singleton = FormValidator._internal();
+
+  factory FormValidator() {
+    return _singleton;
+  }
+
+  FormValidator._internal();
+
   String? isValidName(String? text) {
     if (text == null || text.isEmpty || text.length < 3) {
       return "name_error".tr;
@@ -27,14 +35,14 @@ class FormValidator {
   }
 
   String? isValidTaskName(String? text) {
-    if (text == null || text.isEmpty || text.length > 20) {
+    if (text == null || text.trim().isEmpty || text.trim().length > 20) {
       return "task_name_error".tr;
     }
     return null;
   }
 
   String? isValidTaskDescription(String? text) {
-    if (text == null || text.isEmpty || text.length > 100) {
+    if (text == null || text.trim().isEmpty || text.trim().length > 100) {
       return "task_description_error".tr;
     }
     return null;
