@@ -76,25 +76,14 @@ class TaskListItem extends StatelessWidget {
                             ? MainAxisAlignment.spaceBetween
                             : MainAxisAlignment.center,
                         children: [
-                          Row(
-                            children: [
-                              if (!task.amIPropietary)
-                                Icon(
-                                  Icons.share,
-                                  color: MyColors.CONTRARY.color,
-                                  size: 15,
-                                ),
-                              const SizedBox(width: 10),
-                              Text(
-                                task.title,
-                                style: MyTextStyles.p.textStyle.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                              ),
-                            ],
+                          Text(
+                            task.title,
+                            style: MyTextStyles.p.textStyle.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
                           Text(
                             task.description,
@@ -113,6 +102,12 @@ class TaskListItem extends StatelessWidget {
                                 color: MyColors.SUCCESS.color.withOpacity(0.8),
                                 fontSize: 14,
                               ),
+                            ),
+                          if (!task.amIPropietary)
+                            Icon(
+                              Icons.share,
+                              color: MyColors.CONTRARY.color,
+                              size: 15,
                             ),
                         ],
                       ),

@@ -42,6 +42,7 @@ class MainController extends GetxController {
   final FormValidator formValidator = FormValidator();
 
   int _lastNotificationCount = 0;
+  int _lastCountTasks = 0;
   @override
   void onInit() {
     _startTimer();
@@ -54,15 +55,19 @@ class MainController extends GetxController {
       _taskRepository.addListener(
         idc: user.email!,
         listener: (newTasks) {
-          totalTasks.clear();
+          totalTasks.removeWhere((key, value) => value.amIPropietary);
+          var allIsFinished = true;
           for (var task in newTasks) {
             totalTasks[task.id] = task;
+            if (!task.isFinished) allIsFinished = false;
           }
-
           // If all tasks are done, go to Get.toNamed(Routes.CONGRATULATIONS.path);
-          if (totalTasks.values.every((element) => element.isFinished)) {
-            //Get.toNamed(Routes.CONGRATULATIONS.path);
+          if (allIsFinished &&
+              Get.currentRoute != Routes.CONGRATULATIONS.path &&
+              _lastCountTasks > 0) {
+            Get.toNamed(Routes.CONGRATULATIONS.path);
           }
+          _lastCountTasks = totalTasks.values.map((e) => !e.isFinished).length;
         },
       );
     });
@@ -134,9 +139,10 @@ class MainController extends GetxController {
         entity: task, idc: authController.firebaseUser!.email!);
   }
 
-  void addComment(Rx<Task?> task) {
+  void addComment(Rx<Task?> task, Function() onOpen, Function() onClose) {
     //Show dialog to add comment
-    Get.defaultDialog(
+    onOpen();
+    var dialog = Get.defaultDialog(
       title: 'add_comment'.tr,
       middleText: 'add_comment_message'.tr,
       textConfirm: "confirm".tr,
@@ -176,7 +182,10 @@ class MainController extends GetxController {
         ],
       ),
       onConfirm: () {
-        if (_commentController.text.trim().isEmpty) return;
+        if (formValidator.isValidComment(_commentController.text) != null) {
+          MySnackBar.snackError('comment_error'.tr);
+          return;
+        }
         _addComment(task.value!);
         task.refresh();
         _commentController.clear();
@@ -186,6 +195,8 @@ class MainController extends GetxController {
         _commentController.clear();
       },
     );
+
+    dialog.then((value) => onClose());
   }
 
   void _addComment(Task task) {
@@ -285,9 +296,10 @@ class MainController extends GetxController {
     );
   }
 
-  void addGuest(Rx<Task?> taskSelected) {
+  void addGuest(Rx<Task?> taskSelected, Function() onOpen, Function() onClose) {
     //Show dialog to add guest (IdUser)
-    Get.defaultDialog(
+    onOpen();
+    var dialog = Get.defaultDialog(
         title: 'add_guest'.tr,
         middleText: 'add_guest_message'.tr,
         textConfirm: "confirm".tr,
@@ -352,6 +364,8 @@ class MainController extends GetxController {
         onCancel: () {
           _guestEmailController.clear();
         });
+
+    dialog.then((value) => onClose());
   }
 
   Future<bool?> _addGuest(Task task, String guestEmail) async {

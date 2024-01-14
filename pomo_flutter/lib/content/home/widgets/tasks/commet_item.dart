@@ -83,15 +83,15 @@ class CommetItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
-                    Text(
+                    SelectableText(
                       comment.content,
                       style: MyTextStyles.p.textStyle.copyWith(
                         color: MyColors.CONTRARY.color.withOpacity(0.8),
                         fontSize: 14,
                       ),
                       textAlign: TextAlign.start,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 4,
+                      //overflow: TextOverflow.ellipsis,
+                      scrollPhysics: const NeverScrollableScrollPhysics(),
                     ),
                     const SizedBox(height: 5),
                     Text(

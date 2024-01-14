@@ -89,9 +89,11 @@ class MyLocalizations extends Translations {
           "shopping_name": "Shopping",
           "others_name": "Others",
           "task_name_error":
-              "Name must not be empty and have less than 20 characters",
+              "Name must not be empty and have less than 50 characters",
           "task_description_error":
-              "Description must not be empty and have less than 100 characters",
+              "Description must not be empty and have less than 250 characters",
+          "comment_error":
+              "Comment must not be empty and have less than 350 characters",
           "default_working_config": "Default working configuration",
           "reset_config": "Reset configuration",
           "save_config": "Save configuration",
@@ -315,9 +317,11 @@ class MyLocalizations extends Translations {
           "shopping_name": "Compras",
           "others_name": "Otros",
           "task_name_error":
-              "El nombre debe no estar vacío y tener menos de 20 caracteres",
+              "El nombre debe no estar vacío y tener menos de 50 caracteres",
           "task_description_error":
-              "La descripción debe no estar vacía y tener menos de 100 caracteres",
+              "La descripción debe no estar vacía y tener menos de 250 caracteres",
+          "comment_error":
+              "El comentario debe no estar vacío y tener menos de 350 caracteres",
           "default_working_config": "Configuración de trabajo por defecto",
           "reset_config": "Restablecer configuración",
           "save_config": "Guardar configuración",

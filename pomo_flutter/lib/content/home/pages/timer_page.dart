@@ -52,6 +52,7 @@ class TimerBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var isGoingBackTimer = false;
     return GenericTemplate(
       icon: Icons.arrow_back,
       onIconTap: () {
@@ -187,7 +188,7 @@ class TimerBody extends StatelessWidget {
                             : Colors.grey[300]!,
                       );
                     } else {
-                      return Container();
+                      return const SizedBox(width: 50);
                     }
                   }),
                   Obx(
@@ -217,7 +218,17 @@ class TimerBody extends StatelessWidget {
                             : Colors.grey[300]!,
                       );
                     } else {
-                      return Container();
+                      return MyIconButton(
+                        icon: Icons.skip_next,
+                        onTap: () {
+                          //timerController.stopTimer(mainController);
+                          timerController.skipTimer();
+                        },
+                        iconColor: MyColors.CONTRARY.color,
+                        backgroundColor: Get.isDarkMode
+                            ? Colors.grey[800]!
+                            : Colors.grey[300]!,
+                      );
                     }
                   }),
                 ],
@@ -239,6 +250,18 @@ class TimerBody extends StatelessWidget {
               onButtonTap: () {
                 mainController.addComment(
                   timerController.taskSelected,
+                  () {
+                    if (timerController.isPlaying.value) {
+                      timerController.pauseChangeTimer();
+                      isGoingBackTimer = true;
+                    }
+                  },
+                  () {
+                    if (isGoingBackTimer) {
+                      timerController.pauseChangeTimer();
+                      isGoingBackTimer = false;
+                    }
+                  },
                 );
               },
             ),
@@ -275,6 +298,18 @@ class TimerBody extends StatelessWidget {
                 onButtonTap: () {
                   mainController.addGuest(
                     timerController.taskSelected,
+                    () {
+                      if (timerController.isPlaying.value) {
+                        timerController.pauseChangeTimer();
+                        isGoingBackTimer = true;
+                      }
+                    },
+                    () {
+                      if (isGoingBackTimer) {
+                        timerController.pauseChangeTimer();
+                        isGoingBackTimer = false;
+                      }
+                    },
                   );
                 },
               ),

@@ -35,15 +35,22 @@ class FormValidator {
   }
 
   String? isValidTaskName(String? text) {
-    if (text == null || text.trim().isEmpty || text.trim().length > 20) {
+    if (text == null || text.trim().isEmpty || text.trim().length > 50) {
       return "task_name_error".tr;
     }
     return null;
   }
 
   String? isValidTaskDescription(String? text) {
-    if (text == null || text.trim().isEmpty || text.trim().length > 100) {
+    if (text == null || text.trim().isEmpty || text.trim().length > 250) {
       return "task_description_error".tr;
+    }
+    return null;
+  }
+
+  String? isValidComment(String? text) {
+    if (text == null || text.trim().isEmpty || text.trim().length > 350) {
+      return "comment_error".tr;
     }
     return null;
   }

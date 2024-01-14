@@ -164,9 +164,10 @@ class TimerController extends GetxController {
     }
   }
 
-  void saveTask(
-      {required double timeSpentInThisWorkSession,
-      bool unselect = false}) async {
+  void saveTask({
+    required double timeSpentInThisWorkSession,
+    bool unselect = false,
+  }) async {
     taskSelected.value?.timeSpent = timeSpentInThisWorkSession.toInt();
     var email = taskSelected.value!.amIPropietary
         ? _authController.firebaseUser!.email!
@@ -215,6 +216,10 @@ class TimerController extends GetxController {
     if (total.isEmpty) return;
     await _notificationRepository.save(
         entity: total[0], idc: _authController.firebaseUser!.email!);
+  }
+
+  void skipTimer() {
+    current.value = currentMax.value - 1;
   }
 }
 
