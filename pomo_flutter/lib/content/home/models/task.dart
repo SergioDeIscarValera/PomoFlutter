@@ -1,10 +1,11 @@
+import 'package:PomoFlutter/content/home/models/comment/task_check_list_item.dart';
 import 'package:PomoFlutter/content/home/models/task_category.dart';
 import 'package:PomoFlutter/content/home/models/task_colors.dart';
 import 'package:PomoFlutter/content/home/models/task_schedule_type.dart';
 import 'package:PomoFlutter/content/home/models/timer_status.dart';
 import 'package:uuid/uuid.dart';
 
-import 'task_comment.dart';
+import 'comment/task_comment.dart';
 
 class Task {
   late String _id;
@@ -65,7 +66,7 @@ class Task {
   }
 
   factory Task.fromJson({required Map<String, dynamic> json}) {
-    return Task(
+    var task = Task(
       id: json['id'],
       title: json['title'],
       description: json['description'],
@@ -82,11 +83,6 @@ class Task {
       timeSpent: json['timeSpent'],
       timerStatus: TimerStatus.values
           .firstWhere((element) => element.id == json['timerStatus']),
-      comments: json['comments'] == null || json['comments'].isEmpty
-          ? []
-          : (json['comments'] as List<dynamic>)
-              .map((e) => TaskComment.fromJson(json: e))
-              .toList(),
       calendarId: json['calendarId'] ?? '',
       endDateTime: json['endDateTime'] != null
           ? DateTime.parse(json['endDateTime'])
@@ -99,6 +95,10 @@ class Task {
           ? (json['guests'] as List<dynamic>).map((e) => e.toString()).toList()
           : [],
     );
+    task._comments = json['comments'] == null || json['comments'].isEmpty
+        ? {}
+        : task._jsonToComments(json['comments'] as List<dynamic>);
+    return task;
   }
 
   String toJson() {
@@ -180,5 +180,61 @@ class Task {
 
   void removeComment(TaskComment comment) {
     _comments.remove(comment.id);
+  }
+
+  Map<String, TaskComment<dynamic>> _jsonToComments(List<dynamic> json) {
+    var comments = <String, TaskComment<dynamic>>{};
+    for (var commentJson in json) {
+      var type = commentJson['type'];
+      var id = commentJson['id'];
+      switch (type) {
+        case "String":
+          comments[id] = TaskComment<String>.fromJson(
+              json: commentJson, fromJson: (json) => json);
+          break;
+        case "List<TaskCheckListItem>":
+          // checkJson is a json array of TaskCheckListItem
+          comments[id] = TaskComment<List<TaskCheckListItem>>.fromJson(
+              json: commentJson, fromJson: (text) => _stringToCheckList(text));
+          break;
+        default: // Version antigua sin tipo
+          comments[id] = TaskComment<String>.fromJson(
+              json: commentJson, fromJson: (json) => json);
+          break;
+      }
+    }
+    return comments;
+  }
+
+  List<TaskCheckListItem> _stringToCheckList(dynamic text) {
+    if (text == null || text.isEmpty || text is! List<dynamic>) return [];
+    return text.map((e) => TaskCheckListItem.fromJson(json: e)).toList();
+  }
+
+  void addCheckListItem(
+    String idComment,
+    TaskCheckListItem checkListItem,
+  ) {
+    var index = comments.indexWhere((element) => element.id == idComment);
+    if (index == -1) return;
+    var comment = comments[index] as TaskComment<List<TaskCheckListItem>>;
+    comment.content.add(checkListItem);
+  }
+
+  void removeCheckListItem(String idComment, TaskCheckListItem checkListItem) {
+    var index = comments.indexWhere((element) => element.id == idComment);
+    if (index == -1) return;
+    var comment = comments[index] as TaskComment<List<TaskCheckListItem>>;
+    comment.content.remove(checkListItem);
+  }
+
+  void checkListItem(String id, TaskCheckListItem item, bool bool) {
+    var index = comments.indexWhere((element) => element.id == id);
+    if (index == -1) return;
+    var comment = comments[index] as TaskComment<List<TaskCheckListItem>>;
+    var itemIndex =
+        comment.content.indexWhere((element) => element.id == item.id);
+    if (itemIndex == -1) return;
+    comment.content[itemIndex].isDone = bool;
   }
 }

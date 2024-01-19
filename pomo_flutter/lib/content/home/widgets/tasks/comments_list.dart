@@ -1,4 +1,4 @@
-import 'package:PomoFlutter/content/home/models/task_comment.dart';
+import 'package:PomoFlutter/content/home/models/comment/task_comment.dart';
 import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:flutter/material.dart';

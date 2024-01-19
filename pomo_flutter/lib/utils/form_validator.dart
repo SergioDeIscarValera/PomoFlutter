@@ -54,4 +54,11 @@ class FormValidator {
     }
     return null;
   }
+
+  String? isValidTaskCheckListItem(String? text) {
+    if (text == null || text.trim().isEmpty || text.trim().length > 50) {
+      return "task_check_list_item_error".tr;
+    }
+    return null;
+  }
 }

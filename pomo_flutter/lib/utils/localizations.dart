@@ -228,6 +228,11 @@ class MyLocalizations extends Translations {
           "decline_task_invitation_message":
               "Are you sure you want to decline this task invitation?",
           "guests_title": "Guests",
+          "add_checklist_item": "Add item",
+          "add_checklist_item_message": "Add an item to this list",
+          "checklist_item": "Item text",
+          "task_check_list_item_error":
+              "The item cannot be empty and have less than 50 characters",
         },
         'es_ES': {
           "app_name": "Pomo Flutter",
@@ -462,6 +467,11 @@ class MyLocalizations extends Translations {
           "decline_task_invitation_message":
               "¿Estás seguro de que quieres declinar esta invitación de tarea?",
           "guests_title": "Invitados",
+          "add_checklist_item": "Añadir item",
+          "add_checklist_item_message": "Añade un item a esta lista",
+          "checklist_item": "Texto del item",
+          "task_check_list_item_error":
+              "El item no puede estar vacío y tener menos de 50 caracteres",
         },
       };
 }

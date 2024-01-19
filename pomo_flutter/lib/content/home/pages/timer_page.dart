@@ -244,6 +244,18 @@ class TimerBody extends StatelessWidget {
                     comment: comment,
                     mainController: mainController,
                     timerController: timerController,
+                    onOpen: () {
+                      if (timerController.isPlaying.value) {
+                        timerController.pauseChangeTimer();
+                        isGoingBackTimer = true;
+                      }
+                    },
+                    onClose: () {
+                      if (isGoingBackTimer) {
+                        timerController.pauseChangeTimer();
+                        isGoingBackTimer = false;
+                      }
+                    },
                   ),
                 ),
               ),

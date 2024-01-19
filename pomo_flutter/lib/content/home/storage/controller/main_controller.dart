@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:PomoFlutter/content/auth/storage/controller/auth_controller.dart';
+import 'package:PomoFlutter/content/home/models/comment/task_check_list_item.dart';
 import 'package:PomoFlutter/content/home/models/task_invitation.dart';
 import 'package:PomoFlutter/content/home/models/task.dart';
-import 'package:PomoFlutter/content/home/models/task_comment.dart';
+import 'package:PomoFlutter/content/home/models/comment/task_comment.dart';
 import 'package:PomoFlutter/content/home/services/notification/interface_notication_repository.dart';
 import 'package:PomoFlutter/content/home/services/notification/notification_repository.dart';
 import 'package:PomoFlutter/content/home/services/task/task_repository.dart';
@@ -13,6 +14,7 @@ import 'package:PomoFlutter/themes/colors.dart';
 import 'package:PomoFlutter/themes/styles/my_text_styles.dart';
 import 'package:PomoFlutter/utils/form_validator.dart';
 import 'package:PomoFlutter/utils/snakbars.dart';
+import 'package:PomoFlutter/widgets/my_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -34,6 +36,7 @@ class MainController extends GetxController {
 
   final TextEditingController _commentController = TextEditingController();
   final TextEditingController _guestEmailController = TextEditingController();
+  final TextEditingController _checkItemController = TextEditingController();
 
   final Rx<Task?> taskSelected = Rx<Task?>(null);
 
@@ -139,7 +142,79 @@ class MainController extends GetxController {
         entity: task, idc: authController.firebaseUser!.email!);
   }
 
-  void addComment(Rx<Task?> task, Function() onOpen, Function() onClose) {
+  void addComment(
+    Rx<Task?> task,
+    Function() onOpen,
+    Function() onClose,
+  ) {
+    onOpen();
+    var isOpeningAnotherDialog = false;
+    //Dialog to choose the comment type, string or TaskCheckList
+    var dialog = Get.defaultDialog(
+      title: 'add_comment'.tr,
+      middleText: 'add_comment_message'.tr,
+      textCancel: "cancel".tr,
+      titleStyle: MyTextStyles.h2.textStyle.copyWith(
+        color: MyColors.CONTRARY.color,
+      ),
+      middleTextStyle: MyTextStyles.p.textStyle,
+      cancelTextColor: MyColors.CONTRARY.color,
+      confirmTextColor: MyColors.CONTRARY.color,
+      backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+      buttonColor: MyColors.CURRENT.color,
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          MyIconButton(
+            icon: Icons.checklist,
+            onTap: () {
+              Get.back();
+              _addCommentCheckList(task);
+            },
+            iconColor: MyColors.CURRENT.color,
+            backgroundColor: MyColors.CONTRARY.color,
+          ),
+          const SizedBox(height: 10),
+          MyIconButton(
+            icon: Icons.text_fields,
+            onTap: () {
+              isOpeningAnotherDialog = true;
+              Get.back();
+              _addCommentText(task, onOpen, onClose);
+            },
+            iconColor: MyColors.CURRENT.color,
+            backgroundColor: MyColors.CONTRARY.color,
+          ),
+        ],
+      ),
+      onCancel: () {},
+    );
+
+    dialog.then((value) => {
+          if (!isOpeningAnotherDialog) {onClose()}
+        });
+  }
+
+  void _addCommentCheckList(Rx<Task?> task) {
+    var newComment = TaskComment<List<TaskCheckListItem>>(
+      content: [],
+      userPhotoUrl: authController.firebaseUser?.photoURL,
+      userName: authController.firebaseUser!.displayName ??
+          authController.firebaseUser!.email!.split('@')[0],
+    );
+    var email = task.value!.amIPropietary
+        ? authController.firebaseUser!.email!
+        : task.value!.propietaryEmail!;
+    task.value!.addComment(newComment);
+    _taskRepository.save(entity: task.value!, idc: email);
+  }
+
+  void _addCommentText(
+    Rx<Task?> task,
+    Function() onOpen,
+    Function() onClose,
+  ) {
     //Show dialog to add comment
     onOpen();
     var dialog = Get.defaultDialog(
@@ -513,5 +588,97 @@ class MainController extends GetxController {
       entity: task,
       idc: authController.firebaseUser!.email!,
     );
+  }
+
+  void addCheckListItem({
+    required Task task,
+    required TaskComment comment,
+    required Function() onOpen,
+    required Function() onClose,
+  }) {
+    onOpen();
+    var dialog = Get.defaultDialog(
+      title: 'add_checklist_item'.tr,
+      middleText: 'add_checklist_item_message'.tr,
+      textConfirm: "confirm".tr,
+      textCancel: "cancel".tr,
+      titleStyle: MyTextStyles.h2.textStyle.copyWith(
+        color: MyColors.CONTRARY.color,
+      ),
+      middleTextStyle: MyTextStyles.p.textStyle,
+      cancelTextColor: MyColors.CONTRARY.color,
+      confirmTextColor: MyColors.CONTRARY.color,
+      backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.grey[300],
+      buttonColor: MyColors.CURRENT.color,
+      content: Column(
+        children: [
+          TextField(
+            controller: _checkItemController,
+            decoration: InputDecoration(
+              hintText: 'checklist_item'.tr,
+              hintStyle: MyTextStyles.p.textStyle.copyWith(
+                color: MyColors.CONTRARY.color,
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: MyColors.CONTRARY.color,
+                ),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: MyColors.CURRENT.color,
+                ),
+              ),
+            ),
+            style: MyTextStyles.p.textStyle.copyWith(
+              color: MyColors.CONTRARY.color,
+            ),
+          ),
+        ],
+      ),
+      onConfirm: () {
+        if (formValidator.isValidTaskCheckListItem(_checkItemController.text) !=
+            null) {
+          MySnackBar.snackError('comment_error'.tr);
+          return;
+        }
+        _addCheckListItem(task, comment);
+        _checkItemController.clear();
+        Get.back();
+      },
+      onCancel: () {
+        _commentController.clear();
+      },
+    );
+
+    dialog.then((value) => onClose());
+  }
+
+  void _addCheckListItem(Task task, TaskComment comment) {
+    final checkListItem = TaskCheckListItem(
+      content: _checkItemController.text,
+      isDone: false,
+    );
+
+    var email = task.amIPropietary
+        ? authController.firebaseUser!.email!
+        : task.propietaryEmail!;
+
+    task.addCheckListItem(comment.id, checkListItem);
+    _taskRepository.save(entity: task, idc: email);
+  }
+
+  void removeCheckListItem(
+      Task task, TaskComment comment, TaskCheckListItem item) {
+    task.removeCheckListItem(comment.id, item);
+    _taskRepository.save(
+        entity: task, idc: authController.firebaseUser!.email!);
+  }
+
+  void checkListItem(
+      Task task, TaskComment comment, TaskCheckListItem item, bool bool) {
+    task.checkListItem(comment.id, item, bool);
+    _taskRepository.save(
+        entity: task, idc: authController.firebaseUser!.email!);
   }
 }

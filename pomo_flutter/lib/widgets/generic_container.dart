@@ -7,6 +7,8 @@ class GenericContainer extends StatelessWidget {
     required this.children,
     this.padding = 16,
     this.direction = Axis.horizontal,
+    this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
+    this.margin = const EdgeInsets.all(0),
     this.color,
   });
 
@@ -14,10 +16,13 @@ class GenericContainer extends StatelessWidget {
   final double padding;
   final Axis direction;
   final Color? color;
+  final MainAxisAlignment mainAxisAlignment;
+  final EdgeInsets margin;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: margin,
       decoration: BoxDecoration(
         color: color ?? (Get.isDarkMode ? Colors.grey[800] : Colors.grey[300]),
         borderRadius: BorderRadius.circular(24),
@@ -34,13 +39,13 @@ class GenericContainer extends StatelessWidget {
         builder: (context) {
           if (direction == Axis.horizontal) {
             return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: mainAxisAlignment,
               children: children,
             );
           } else {
             return Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: mainAxisAlignment,
               children: children,
             );
           }
